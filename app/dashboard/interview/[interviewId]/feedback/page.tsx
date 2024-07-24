@@ -17,14 +17,13 @@ interface FeedbackData {
   id: number;
   mockIdRef: string;
   question: string;
-  correctAnswer: string;
-  userAnswer: string;
-  feedback: string;
-  rating: string;
-  userEmail: string;
-  createdAt: string;
+  correctAnswer: string | null;
+  userAnswer: string | null;
+  feedback: string | null;
+  rating: string | null;
+  userEmail: string | null;
+  createadAt: string | null; // Note the corrected property name
 }
-
 function Feedback({ params }: any) {
   const router = useRouter();
   const [feedbackList, setFeedbackList] = useState<FeedbackData[]>([]);
@@ -50,14 +49,14 @@ function Feedback({ params }: any) {
 
   let sum: number = 0;
   feedbackList.map((data: FeedbackData) => {
-    sum = sum + parseInt(data.rating);
+    sum += data.rating ? parseInt(data.rating) : 0;
   });
   const totalRating = sum / 5;
 
   return (
     feedbackList && (
       <div>
-        {feedbackList == 0 ? (
+        {feedbackList.length === 0 ? (
           <h2>No Interview question recored</h2>
         ) : (
           <>
