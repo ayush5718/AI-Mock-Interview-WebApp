@@ -13,9 +13,21 @@ import { ChevronsUpDownIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 
+interface FeedbackData {
+  id: number;
+  mockIdRef: string;
+  question: string;
+  correctAnswer: string;
+  userAnswer: string;
+  feedback: string;
+  rating: string;
+  userEmail: string;
+  createdAt: string;
+}
+
 function Feedback({ params }: any) {
   const router = useRouter();
-  const [feedbackList, setFeedbackList] = useState<any | null>([]);
+  const [feedbackList, setFeedbackList] = useState<FeedbackData[]>([]);
 
   const getFeedback = async () => {
     try {
@@ -24,7 +36,7 @@ function Feedback({ params }: any) {
         .from(UserAnswer)
         .where(eq(UserAnswer.mockIdRef, params.interviewId))
         .orderBy(UserAnswer.id);
-      setFeedbackList(result);
+      setFeedbackList(result as FeedbackData[]);
     } catch (err) {
       console.log("Error fetching feedback details", err);
     }
@@ -36,8 +48,8 @@ function Feedback({ params }: any) {
   //   toast.error("you have not recorded the answer please record again");
   // }
 
-  let sum: any = 0;
-  feedbackList.map((data) => {
+  let sum: number = 0;
+  feedbackList.map((data: FeedbackData) => {
     sum = sum + parseInt(data.rating);
   });
   const totalRating = sum / 5;
