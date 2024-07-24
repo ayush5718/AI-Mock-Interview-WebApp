@@ -60,11 +60,11 @@ function QuestionSection({
         </div>
 
         <h2 className="my-5 text-md md:text-lg">
-          {mockInterviewQuestion[activeQuestionIndex].question}
+          {mockInterviewQuestion[activeQuestionIndex]?.question}
         </h2>
         <Volume2
           onClick={() =>
-            textToSpeech(mockInterviewQuestion[activeQuestionIndex].question)
+            textToSpeech(mockInterviewQuestion[activeQuestionIndex]?.question)
           }
           className="mb-5 cursor-pointer"
         />

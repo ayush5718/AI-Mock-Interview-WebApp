@@ -92,7 +92,7 @@ function RecAnswerSection({
   useEffect(() => {
     const updateUserAnswerInDb = async () => {
       const feedbackPrompt = `
-        Question: ${mockInterviewQuestion[activeQuestionIndex].question}
+        Question: ${mockInterviewQuestion[activeQuestionIndex]?.question}
         Answer: ${state.userRecordedAnswer}
         Please provide a JSON response with two fields: "rating" and "feedback". 
         - "rating": A number from 1 to 5 indicating the quality of the answer honestly.
