@@ -76,7 +76,7 @@ function StartInterview({ params }: StartInterviewProps) {
         <RecAnswerSection
           mockInterviewQuestion={interviewQuestions}
           activeQuestionIndex={activeQuestionIndex}
-          interviewData={interviewData}
+          interviewData={interviewData || { mockId: "" }}
         />
       </div>
 

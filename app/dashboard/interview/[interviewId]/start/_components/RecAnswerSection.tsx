@@ -25,7 +25,7 @@ interface State {
 }
 
 interface RecAnswerSectionProps {
-  mockInterviewQuestion: { question: string; answer: string }[]; // Adjust as needed
+  mockInterviewQuestion: { question: string; answer: string }[];
   activeQuestionIndex: number;
   interviewData: { mockId: string };
 }
