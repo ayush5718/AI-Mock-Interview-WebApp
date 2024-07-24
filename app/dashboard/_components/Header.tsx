@@ -11,6 +11,7 @@ import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 const navigation = [
+  { name: "Home", href: "/" },
   { name: "Dashboard", href: "/dashboard" },
   { name: "How it Works", href: "/how" },
   { name: "Upgrade", href: "/upgrade" },
@@ -32,14 +33,16 @@ function Header() {
           className="flex items-center justify-between p-6 lg:px-8"
         >
           <div className="flex lg:flex-1">
-            <a href="#" className="-m-1.5 p-1.5">
+            <Link href={"/"} className="-m-1.5 p-1.5">
               <span className="sr-only">Your Company</span>
-              <img
+              <Image
+                width={0}
+                height={0}
                 alt=""
-                src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
+                src={"/logo.svg"}
                 className="h-8 w-auto"
               />
-            </a>
+            </Link>
           </div>
           <div className="flex lg:hidden">
             <button
@@ -80,14 +83,16 @@ function Header() {
           <div className="fixed inset-0 z-50" />
           <DialogPanel className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
             <div className="flex items-center justify-between">
-              <a href="#" className="-m-1.5 p-1.5">
+              <Link href={"/"} className="-m-1.5 p-1.5">
                 <span className="sr-only">Your Company</span>
-                <img
-                  alt=""
-                  src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
+                <Image
+                  width={0}
+                  height={0}
+                  alt="logo"
+                  src={"/logo.svg"}
                   className="h-8 w-auto"
                 />
-              </a>
+              </Link>
               <button
                 type="button"
                 onClick={() => setMobileMenuOpen(false)}
@@ -113,7 +118,15 @@ function Header() {
                 <div className="py-6">
                   <h2 className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">
                     {isSignedIn ? (
-                      <UserButton />
+                      <>
+                        <div className="flex items-center gap-2">
+                          <UserButton />
+                          <span className="font-bold text-lg text-gray-600">
+                            {" "}
+                            {user.fullName}
+                          </span>
+                        </div>
+                      </>
                     ) : (
                       <button onClick={handleSignin}>Log in &rarr;</button>
                     )}
