@@ -55,7 +55,7 @@ function Feedback({ params }: any) {
 
   return (
     feedbackList && (
-      <div>
+      <div className="my-20">
         {feedbackList.length === 0 ? (
           <h2>No Interview question recored</h2>
         ) : (

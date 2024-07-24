@@ -64,23 +64,50 @@ function StartInterview({ params }: StartInterviewProps) {
   };
 
   return (
-    <div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+    <div className="my-20">
+      <div className="grid grid-cols-1 md:grid-cols-2 md:gap-10 gap-2">
         {/*questions */}
-        <QuestionSection
-          mockInterviewQuestion={interviewQuestions || []}
-          activeQuestionIndex={activeQuestionIndex}
-        />
+        <div className="order-2 md:order-1">
+          <div className="flex justify-end  gap-5 md:hidden">
+            {activeQuestionIndex > 0 && (
+              <Button onClick={() => setQuestionIndex(activeQuestionIndex - 1)}>
+                Previous Question
+              </Button>
+            )}
+            {activeQuestionIndex != 4 && (
+              <Button
+                variant={"outline"}
+                onClick={() => setQuestionIndex(activeQuestionIndex + 1)}
+              >
+                Next Question
+              </Button>
+            )}
+            {activeQuestionIndex == 4 && (
+              <Link
+                href={
+                  "/dashboard/interview/" + interviewData?.mockId + "/feedback"
+                }
+              >
+                <Button variant={"destructive"}>End Interview</Button>
+              </Link>
+            )}
+          </div>
+          <QuestionSection
+            mockInterviewQuestion={interviewQuestions || []}
+            activeQuestionIndex={activeQuestionIndex}
+          />
+        </div>
         {/*video/audio recording */}
-
-        <RecAnswerSection
-          mockInterviewQuestion={interviewQuestions}
-          activeQuestionIndex={activeQuestionIndex}
-          interviewData={interviewData || { mockId: "" }}
-        />
+        <div className="order-1 md:order-1">
+          <RecAnswerSection
+            mockInterviewQuestion={interviewQuestions}
+            activeQuestionIndex={activeQuestionIndex}
+            interviewData={interviewData || { mockId: "" }}
+          />
+        </div>
       </div>
 
-      <div className="flex justify-end my-10 gap-5">
+      <div className="hidden  md:flex justify-end my-10 gap-5">
         {activeQuestionIndex > 0 && (
           <Button onClick={() => setQuestionIndex(activeQuestionIndex - 1)}>
             Previous Question

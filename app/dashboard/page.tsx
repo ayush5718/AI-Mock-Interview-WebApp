@@ -6,7 +6,7 @@ import Link from "next/link";
 
 function Dashboard() {
   return (
-    <div className="p-10">
+    <div className="p-10 my-20">
       <h2 className="font-bold text-2xl">Dashboard</h2>
 
       <UserName />

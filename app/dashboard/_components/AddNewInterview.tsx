@@ -129,7 +129,7 @@ function AddNewInterview() {
 
       <Dialog open={openDialog}>
         {/* <DialogTrigger>Open</DialogTrigger> */}
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="md:max-w-2xl max-w-80 rounded-lg md:h-7/8  overflow-auto">
           <DialogHeader>
             <DialogTitle className="text-2xl">
               Tell us more about your job Interview

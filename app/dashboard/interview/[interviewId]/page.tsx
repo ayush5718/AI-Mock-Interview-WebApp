@@ -111,7 +111,7 @@ function Interview({ params }: any) {
           )}
 
           <Button
-            className="mt-2 my-6 mx-2 w-1/4"
+            className="mt-2 my-6 mx-2 md:w-1/4 w-full"
             variant={"destructive"}
             onClick={navigateToInterview}
           >
