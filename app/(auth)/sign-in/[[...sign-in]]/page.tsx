@@ -35,13 +35,8 @@ function page() {
               </a>
 
               <h2 className="mt-6 text-2xl font-bold text-white sm:text-3xl md:text-4xl">
-                Welcome to Squid 🦑
+                Welcome to AI MOCK interview Web Application 🦑
               </h2>
-
-              <p className="mt-4 leading-relaxed text-white/90">
-                Lorem, ipsum dolor sit amet consectetur adipisicing elit.
-                Eligendi nam dolorum aliquam, quibusdam aperiam voluptatum.
-              </p>
             </div>
           </section>
 
@@ -66,14 +61,14 @@ function page() {
                   </svg>
                 </a>
 
-                <h1 className="mt-2 text-2xl font-bold text-gray-900 sm:text-3xl md:text-4xl">
-                  Welcome to Squid 🦑
+                <h1 className="mt-10 my-10 text-2xl font-bold text-gray-900 sm:text-3xl md:text-4xl">
+                  Welcome to AI MOCK interview Web Application 🦑
                 </h1>
 
-                <p className="mt-4 leading-relaxed text-gray-500">
+                {/* <p className="mt-4 leading-relaxed text-gray-500">
                   Lorem, ipsum dolor sit amet consectetur adipisicing elit.
                   Eligendi nam dolorum aliquam, quibusdam aperiam voluptatum.
-                </p>
+                </p> */}
               </div>
 
               {/* <form action="#" className="mt-8 grid grid-cols-6 gap-6">
