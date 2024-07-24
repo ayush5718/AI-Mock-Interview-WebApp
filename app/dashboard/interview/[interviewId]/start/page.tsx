@@ -34,13 +34,13 @@ interface StartInterviewProps {
 function StartInterview({ params }: StartInterviewProps) {
   const [interviewData, setInterviewData] = useState<Result | null>(null);
   const [interviewQuestions, setInterviewQuestions] = useState<
-    InterviewQuestion[] | null
-  >(null);
+    InterviewQuestion[]
+  >([]);
   const [activeQuestionIndex, setQuestionIndex] = useState<number>(0);
 
   useEffect(() => {
     getInterviewDetails();
-  }, [params.interviewId]); // Dependency array updated to include params.interviewId
+  }, [params.interviewId]);
 
   const getInterviewDetails = async () => {
     if (!params.interviewId) return;
@@ -68,10 +68,9 @@ function StartInterview({ params }: StartInterviewProps) {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
         {/*questions */}
         <QuestionSection
-          mockInterviewQuestion={interviewQuestions}
+          mockInterviewQuestion={interviewQuestions || []}
           activeQuestionIndex={activeQuestionIndex}
         />
-
         {/*video/audio recording */}
 
         <RecAnswerSection
