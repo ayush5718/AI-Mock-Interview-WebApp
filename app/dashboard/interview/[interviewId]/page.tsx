@@ -18,13 +18,12 @@ interface Result {
   createdAt: string;
   mockId: string;
 }
-function interview({ params }: any) {
+function Interview({ params }: any) {
   const route = useRouter();
   const [interviewData, setInterviewData] = useState<Result | null>(null);
   const [webCamEnable, setWebCamEnable] = useState(false);
 
   useEffect(() => {
-    console.log(params);
     getInterviewDetails();
   }, []);
 
@@ -126,4 +125,4 @@ function interview({ params }: any) {
   );
 }
 
-export default interview;
+export default Interview;

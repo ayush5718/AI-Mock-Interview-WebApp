@@ -47,8 +47,8 @@ function StartInterview({ params }: any) {
     }
   };
 
-  console.log(interviewData);
-  console.log(interviewQuestions);
+  // console.log(interviewData);
+  // console.log(interviewQuestions);
 
   return (
     <div>
