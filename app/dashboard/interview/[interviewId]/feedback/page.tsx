@@ -89,13 +89,15 @@ function Feedback({ params }: any) {
                       <div className="flex flex-col gap-2">
                         <h2
                           className={`border text-red-600 rounded-lg p-2 my-4 ${
-                            data?.rating > 3 ? "bg-green-50" : "bg-red-50"
+                            data?.rating && parseInt(data.rating) > 3
+                              ? "bg-green-50"
+                              : "bg-red-50"
                           }`}
                         >
                           <strong>Rating:</strong>{" "}
                           <span
                             className={`${
-                              data.rating > 3
+                              data?.rating && parseInt(data.rating) > 3
                                 ? "text-green-600"
                                 : "text-red-600"
                             }`}
@@ -105,7 +107,7 @@ function Feedback({ params }: any) {
                         </h2>
                         <h2
                           className={`border p-5  rounded-lg ${
-                            data?.rating > 3
+                            data?.rating && parseInt(data.rating) > 3
                               ? "text-green-600 bg-green-50"
                               : "text-red-600 bg-red-50"
                           }`}
