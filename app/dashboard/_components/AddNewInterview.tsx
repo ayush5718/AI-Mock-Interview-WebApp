@@ -24,6 +24,17 @@ interface FormState {
   jobDescription: String;
   jobExperience: Number;
 }
+interface AiMockInterview {
+  id?: number;
+  mockId: string;
+  jsonMockResp: string;
+  jobPosition: string;
+  jobDesc: string;
+  jobExperience: string;
+  createdBy: string;
+  createdAt: string;
+}
+
 function AddNewInterview() {
   const questionCount = process.env.NEXT_PUBLIC_INTERVIEW_QUESTION_COUNT;
   const [openDialog, setOpenDialog] = useState(false);
@@ -79,7 +90,7 @@ function AddNewInterview() {
           jobExperience: formData.jobExperience.toString(),
           createdBy: user?.primaryEmailAddress?.emailAddress || "",
           createdAt: moment().format("DD-MM-yyyy"),
-        })
+        } as AiMockInterview)
         .returning({ mockId: AiMockInterview.mockId });
 
       console.log("inserted mock id", resp);
