@@ -13,8 +13,30 @@ import { db } from "@/utils/db";
 import { useUser } from "@clerk/nextjs";
 import moment from "moment";
 
+// Define types for reducer state and actions
+// Define a type for the speech result
+interface SpeechResult {
+  transcript: string;
+}
+
+interface State {
+  userRecordedAnswer: string;
+  results: SpeechResult[];
+}
+
+interface RecAnswerSectionProps {
+  mockInterviewQuestion: { question: string; answer: string }[]; // Adjust as needed
+  activeQuestionIndex: number;
+  interviewData: { mockId: string };
+}
+
+type Action =
+  | { type: "ADD_TRANSCRIPT"; payload: string }
+  | { type: "RESET" }
+  | { type: "SET_RESULTS"; payload: SpeechResult[] };
+
 // Reducer function to handle state updates
-const reducer = (state, action) => {
+const reducer = (state: State, action: Action): State => {
   switch (action.type) {
     case "ADD_TRANSCRIPT":
       return {
@@ -24,19 +46,21 @@ const reducer = (state, action) => {
     case "RESET":
       return { ...state, userRecordedAnswer: "" };
     case "SET_RESULTS":
-      return { ...state, results: [] };
+      return { ...state, results: action.payload };
     default:
       return state;
   }
 };
+
 function RecAnswerSection({
   mockInterviewQuestion,
   activeQuestionIndex,
   interviewData,
-}: any) {
-  const initialState = { userRecordedAnswer: "", results: [] };
+}: RecAnswerSectionProps) {
+  const initialState: State = { userRecordedAnswer: "", results: [] };
   const [state, dispatch] = useReducer(reducer, initialState);
   const { user } = useUser();
+
   const {
     error,
     interimResult,
@@ -52,22 +76,29 @@ function RecAnswerSection({
 
   // Handle speech-to-text results
   useEffect(() => {
-    results.forEach((result) => {
-      dispatch({ type: "ADD_TRANSCRIPT", payload: result?.transcript });
-    });
+    if (results) {
+      results.forEach((result) => {
+        // Ensure `result` is typed correctly and handle as needed
+        if (typeof result === "object" && "transcript" in result) {
+          dispatch({ type: "ADD_TRANSCRIPT", payload: result.transcript });
+        } else if (typeof result === "string") {
+          dispatch({ type: "ADD_TRANSCRIPT", payload: result });
+        }
+      });
+    }
   }, [results]);
 
   // Update user answer in DB if recording has stopped and there is enough recorded data
   useEffect(() => {
     const updateUserAnswerInDb = async () => {
       const feedbackPrompt = `
-      Question: ${mockInterviewQuestion[activeQuestionIndex].question}
-      Answer: ${state.userRecordedAnswer}
-      Please provide a JSON response with two fields: "rating" and "feedback". 
-      - "rating": A number from 1 to 5 indicating the quality of the answer honestly.
-      - "feedback": A short text (3 to 5 lines) providing feedback and areas for improvement.
-      Ensure the response is in valid JSON format.
-      `;
+        Question: ${mockInterviewQuestion[activeQuestionIndex].question}
+        Answer: ${state.userRecordedAnswer}
+        Please provide a JSON response with two fields: "rating" and "feedback". 
+        - "rating": A number from 1 to 5 indicating the quality of the answer honestly.
+        - "feedback": A short text (3 to 5 lines) providing feedback and areas for improvement.
+        Ensure the response is in valid JSON format.
+        `;
 
       const result = await chatSession.sendMessage(feedbackPrompt);
       const mockJsonResp = result.response
@@ -101,7 +132,7 @@ function RecAnswerSection({
       }
     };
 
-    if (!isRecording && state.userRecordedAnswer?.length > 10) {
+    if (!isRecording && state.userRecordedAnswer.length > 10) {
       updateUserAnswerInDb();
     }
   }, [
@@ -123,6 +154,7 @@ function RecAnswerSection({
       startSpeechToText();
     }
   };
+
   return (
     <div className="flex flex-col justify-center items-center">
       <div className="flex flex-col justify-center items-center bg-gray-200 h-full">

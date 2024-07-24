@@ -20,13 +20,28 @@ interface Result {
   mockId: string;
 }
 
-function StartInterview({ params }: any) {
+interface InterviewQuestion {
+  question: string;
+  answer: string;
+}
+
+interface StartInterviewProps {
+  params: {
+    interviewId: string;
+  };
+}
+
+function StartInterview({ params }: StartInterviewProps) {
   const [interviewData, setInterviewData] = useState<Result | null>(null);
-  const [interviewQuestions, setInterviewQuestions] = useState(null);
-  const [activeQuestionIndex, setQuestionIndex] = useState(0);
+  const [interviewQuestions, setInterviewQuestions] = useState<
+    InterviewQuestion[] | null
+  >(null);
+  const [activeQuestionIndex, setQuestionIndex] = useState<number>(0);
+
   useEffect(() => {
     getInterviewDetails();
-  }, []);
+  }, [params.interviewId]); // Dependency array updated to include params.interviewId
+
   const getInterviewDetails = async () => {
     if (!params.interviewId) return;
 
@@ -35,10 +50,11 @@ function StartInterview({ params }: any) {
         .select()
         .from(AiMockInterview)
         .where(eq(AiMockInterview.mockId, params.interviewId));
-      console.log(result);
-      const jsonQuestions = JSON.parse(result[0].jsonMockResp);
 
       if (result.length > 0) {
+        const jsonQuestions: InterviewQuestion[] = JSON.parse(
+          result[0].jsonMockResp
+        );
         setInterviewData(result[0]);
         setInterviewQuestions(jsonQuestions);
       }
@@ -46,9 +62,6 @@ function StartInterview({ params }: any) {
       console.log("Error fetching details of interview", err);
     }
   };
-
-  // console.log(interviewData);
-  // console.log(interviewQuestions);
 
   return (
     <div>

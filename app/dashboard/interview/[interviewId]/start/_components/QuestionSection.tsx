@@ -1,12 +1,21 @@
 import { Lightbulb, Volume2 } from "lucide-react";
 import React, { useEffect, useState } from "react";
+// Define the props type for the QuestionSection component
+// Define the props type for the QuestionSection component
 interface QuestionSectionProps {
-  mockInterviewQuestion: any; // Define the appropriate type based on your JSON structure
+  mockInterviewQuestion: { question: string; answer?: string }[]; // Updated type to include optional answer field
+  activeQuestionIndex: number;
 }
-function QuestionSection<QuestionSectionProps>({
+// Define the type for a single question
+interface Question {
+  question: string;
+  // Add other fields if needed
+}
+
+function QuestionSection({
   mockInterviewQuestion,
   activeQuestionIndex,
-}: any) {
+}: QuestionSectionProps) {
   const [isSpeaking, setIsSpeaking] = useState(false);
 
   const textToSpeech = (text: string) => {
