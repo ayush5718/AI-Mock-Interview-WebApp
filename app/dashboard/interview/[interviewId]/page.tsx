@@ -25,7 +25,7 @@ function Interview({ params }: any) {
 
   useEffect(() => {
     getInterviewDetails();
-  }, []);
+  }, [params]);
 
   const getInterviewDetails = async () => {
     // no interview no fetching of data will happen
@@ -58,7 +58,7 @@ function Interview({ params }: any) {
   return (
     <div className="my-10 flex justify-center flex-col items-center">
       <h2 className="text-center text-2xl font-bold text-blue-500">
-        Let's Get Started
+        Let&apos;s Get Started
       </h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
