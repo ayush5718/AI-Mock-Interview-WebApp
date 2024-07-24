@@ -19,7 +19,7 @@ interface Interview {
 function InterviewList() {
   const { user } = useUser();
   const [interviews, setInterviews] = useState<Interview[]>([]);
-  const [interviewNumber, setinterviewNumber] = useState(0);
+
   const fetchPreviousInterview = async () => {
     if (user?.primaryEmailAddress?.emailAddress) {
       try {

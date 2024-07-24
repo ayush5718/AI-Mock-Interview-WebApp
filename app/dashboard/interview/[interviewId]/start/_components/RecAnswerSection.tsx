@@ -34,9 +34,6 @@ function RecAnswerSection({
   activeQuestionIndex,
   interviewData,
 }: any) {
-  const [userRecordedAnswer, setUserRecordedAnswer] = useState<string | null>(
-    ""
-  );
   const initialState = { userRecordedAnswer: "", results: [] };
   const [state, dispatch] = useReducer(reducer, initialState);
   const { user } = useUser();
@@ -52,69 +49,80 @@ function RecAnswerSection({
     continuous: true,
     useLegacyResults: false,
   });
-  if (error) return <p>Web Speech API is not available in this browser 🤷‍</p>;
+
+  // Handle speech-to-text results
   useEffect(() => {
     results.forEach((result) => {
       dispatch({ type: "ADD_TRANSCRIPT", payload: result?.transcript });
     });
   }, [results]);
 
-  const startsStopRecording = async () => {
+  // Update user answer in DB if recording has stopped and there is enough recorded data
+  useEffect(() => {
+    const updateUserAnswerInDb = async () => {
+      const feedbackPrompt = `
+      Question: ${mockInterviewQuestion[activeQuestionIndex].question}
+      Answer: ${state.userRecordedAnswer}
+      Please provide a JSON response with two fields: "rating" and "feedback". 
+      - "rating": A number from 1 to 5 indicating the quality of the answer honestly.
+      - "feedback": A short text (3 to 5 lines) providing feedback and areas for improvement.
+      Ensure the response is in valid JSON format.
+      `;
+
+      const result = await chatSession.sendMessage(feedbackPrompt);
+      const mockJsonResp = result.response
+        .text()
+        .replace("```json", "")
+        .replace("```", "")
+        .trim();
+
+      try {
+        const parsedJson = JSON.parse(mockJsonResp);
+        console.log(parsedJson);
+        const resp = await db.insert(UserAnswer).values({
+          mockIdRef: interviewData?.mockId,
+          question: mockInterviewQuestion[activeQuestionIndex]?.question,
+          correctAnswer: mockInterviewQuestion[activeQuestionIndex]?.answer,
+          userAnswer: state.userRecordedAnswer,
+          feedback: parsedJson?.feedback,
+          rating: parsedJson?.rating,
+          userEmail: user?.primaryEmailAddress?.emailAddress,
+          createadAt: moment().format("DD-MM-yyyy"),
+        });
+        if (resp) {
+          toast.success("User answer recorded successfully");
+          dispatch({ type: "RESET" });
+        } else {
+          toast.error("Try again answer not recorded successfully");
+        }
+        setResults([]);
+      } catch (error) {
+        console.error("Failed to parse JSON response:", error);
+      }
+    };
+
+    if (!isRecording && state.userRecordedAnswer?.length > 10) {
+      updateUserAnswerInDb();
+    }
+  }, [
+    isRecording,
+    state.userRecordedAnswer,
+    mockInterviewQuestion,
+    activeQuestionIndex,
+    interviewData,
+    setResults,
+    user,
+  ]);
+
+  if (error) return <p>Web Speech API is not available in this browser 🤷‍</p>;
+
+  const startsStopRecording = () => {
     if (isRecording) {
       stopSpeechToText();
     } else {
       startSpeechToText();
     }
   };
-
-  const updateUserAnswerInDb = async () => {
-    const feedbackPrompt = `
-    Question: ${mockInterviewQuestion[activeQuestionIndex].question}
-    Answer: ${userRecordedAnswer}
-    Please provide a JSON response with two fields: "rating" and "feedback". 
-    - "rating": A number from 1 to 5 indicating the quality of the answer honestly.
-    - "feedback": A short text (3 to 5 lines) providing feedback and areas for improvement.
-    Ensure the response is in valid JSON format.
-    `;
-
-    const result = await chatSession.sendMessage(feedbackPrompt);
-    const mockJsonResp = result.response
-      .text()
-      .replace("```json", "")
-      .replace("```", "")
-      .trim();
-
-    try {
-      const parsedJson = JSON.parse(mockJsonResp);
-      console.log(parsedJson);
-      const resp = await db.insert(UserAnswer).values({
-        mockIdRef: interviewData?.mockId,
-        question: mockInterviewQuestion[activeQuestionIndex]?.question,
-        correctAnswer: mockInterviewQuestion[activeQuestionIndex]?.answer,
-        userAnswer: userRecordedAnswer,
-        feedback: parsedJson?.feedback,
-        rating: parsedJson?.rating,
-        userEmail: user?.primaryEmailAddress?.emailAddress,
-        createadAt: moment().format("DD-MM-yyyy"),
-      });
-      if (resp) {
-        toast.success("User answer recorded successfully");
-        dispatch({ type: "RESET" });
-      } else {
-        toast.error("Try again answer not recorded successfully");
-      }
-      setUserRecordedAnswer("");
-      setResults([]);
-    } catch (error) {
-      console.error("Failed to parse JSON response:", error);
-    }
-  };
-
-  useEffect(() => {
-    if (!isRecording && state.userRecordedAnswer?.length > 10) {
-      updateUserAnswerInDb();
-    }
-  }, [isRecording, state.userRecordedAnswer]);
   return (
     <div className="flex flex-col justify-center items-center">
       <div className="flex flex-col justify-center items-center bg-gray-200 h-full">
