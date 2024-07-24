@@ -64,7 +64,7 @@ function AddNewInterview() {
       .replace("```", "");
 
     // Use regex to extract the JSON part
-    const jsonMatch = mockResp.match(/\[.*\]/s);
+    const jsonMatch = mockResp.match(/\[([\s\S]*?)\]/);
     const stringResponse = jsonMatch[0];
     setJsonResponse(stringResponse);
 
