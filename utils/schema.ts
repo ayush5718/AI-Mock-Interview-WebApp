@@ -22,3 +22,16 @@ export const UserAnswer = pgTable("UserAnswer", {
   userEmail: varchar("userEmail"),
   createadAt: varchar("createdAt"),
 });
+
+export const UserFeedback = pgTable("UserFeedback", {
+  id: serial("id").primaryKey(),
+  userName: varchar("userName"),
+  userEmail: varchar("userEmail"),
+  feedbackType: varchar("feedbackType").notNull(), // 'general', 'feature', 'bug', 'improvement'
+  feedbackText: text("feedbackText").notNull(),
+  status: varchar("status").default("pending"), // 'pending', 'reviewed', 'implemented', 'rejected'
+  priority: varchar("priority").default("medium"), // 'low', 'medium', 'high', 'critical'
+  createdAt: varchar("createdAt").notNull(),
+  updatedAt: varchar("updatedAt"),
+  adminNotes: text("adminNotes"), // For internal notes
+});

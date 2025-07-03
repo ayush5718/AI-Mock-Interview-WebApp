@@ -7,7 +7,7 @@ interface dashboardLayoutProps {
 }
 function DashboardLayout({ children }: dashboardLayoutProps) {
   return (
-    <div className="mx-5 md:mx-20 lg:mx-36">
+    <div className="mx-3 sm:mx-5 md:mx-20 lg:mx-36">
       <Header />
       <Toaster position="bottom-center" richColors />
 

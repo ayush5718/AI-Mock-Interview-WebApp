@@ -1,0 +1,69 @@
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="200" height="200" fill="white" stroke="#E5E7EB" stroke-width="2" stroke-dasharray="8,8" rx="12"/>
+  
+  <!-- QR Code Pattern Simulation -->
+  <g opacity="0.3">
+    <!-- Corner squares -->
+    <rect x="20" y="20" width="30" height="30" fill="#6366F1" rx="2"/>
+    <rect x="150" y="20" width="30" height="30" fill="#6366F1" rx="2"/>
+    <rect x="20" y="150" width="30" height="30" fill="#6366F1" rx="2"/>
+    
+    <!-- Inner corner squares -->
+    <rect x="26" y="26" width="18" height="18" fill="white" rx="1"/>
+    <rect x="156" y="26" width="18" height="18" fill="white" rx="1"/>
+    <rect x="26" y="156" width="18" height="18" fill="white" rx="1"/>
+    
+    <rect x="30" y="30" width="10" height="10" fill="#6366F1" rx="1"/>
+    <rect x="160" y="30" width="10" height="10" fill="#6366F1" rx="1"/>
+    <rect x="30" y="160" width="10" height="10" fill="#6366F1" rx="1"/>
+    
+    <!-- Random pattern blocks -->
+    <rect x="70" y="30" width="8" height="8" fill="#6366F1" rx="1"/>
+    <rect x="85" y="30" width="8" height="8" fill="#6366F1" rx="1"/>
+    <rect x="100" y="30" width="8" height="8" fill="#6366F1" rx="1"/>
+    <rect x="70" y="45" width="8" height="8" fill="#6366F1" rx="1"/>
+    <rect x="100" y="45" width="8" height="8" fill="#6366F1" rx="1"/>
+    <rect x="115" y="45" width="8" height="8" fill="#6366F1" rx="1"/>
+    
+    <rect x="30" y="70" width="8" height="8" fill="#6366F1" rx="1"/>
+    <rect x="45" y="70" width="8" height="8" fill="#6366F1" rx="1"/>
+    <rect x="60" y="85" width="8" height="8" fill="#6366F1" rx="1"/>
+    <rect x="75" y="85" width="8" height="8" fill="#6366F1" rx="1"/>
+    <rect x="90" y="70" width="8" height="8" fill="#6366F1" rx="1"/>
+    <rect x="105" y="85" width="8" height="8" fill="#6366F1" rx="1"/>
+    <rect x="120" y="70" width="8" height="8" fill="#6366F1" rx="1"/>
+    <rect x="135" y="85" width="8" height="8" fill="#6366F1" rx="1"/>
+    <rect x="150" y="70" width="8" height="8" fill="#6366F1" rx="1"/>
+    <rect x="165" y="85" width="8" height="8" fill="#6366F1" rx="1"/>
+    
+    <rect x="45" y="100" width="8" height="8" fill="#6366F1" rx="1"/>
+    <rect x="60" y="115" width="8" height="8" fill="#6366F1" rx="1"/>
+    <rect x="90" y="100" width="8" height="8" fill="#6366F1" rx="1"/>
+    <rect x="105" y="115" width="8" height="8" fill="#6366F1" rx="1"/>
+    <rect x="135" y="100" width="8" height="8" fill="#6366F1" rx="1"/>
+    <rect x="150" y="115" width="8" height="8" fill="#6366F1" rx="1"/>
+    
+    <rect x="70" y="130" width="8" height="8" fill="#6366F1" rx="1"/>
+    <rect x="85" y="145" width="8" height="8" fill="#6366F1" rx="1"/>
+    <rect x="100" y="130" width="8" height="8" fill="#6366F1" rx="1"/>
+    <rect x="115" y="145" width="8" height="8" fill="#6366F1" rx="1"/>
+    <rect x="130" y="130" width="8" height="8" fill="#6366F1" rx="1"/>
+    <rect x="145" y="145" width="8" height="8" fill="#6366F1" rx="1"/>
+    <rect x="160" y="130" width="8" height="8" fill="#6366F1" rx="1"/>
+    <rect x="175" y="145" width="8" height="8" fill="#6366F1" rx="1"/>
+    
+    <rect x="70" y="160" width="8" height="8" fill="#6366F1" rx="1"/>
+    <rect x="85" y="175" width="8" height="8" fill="#6366F1" rx="1"/>
+    <rect x="100" y="160" width="8" height="8" fill="#6366F1" rx="1"/>
+    <rect x="115" y="175" width="8" height="8" fill="#6366F1" rx="1"/>
+    <rect x="130" y="160" width="8" height="8" fill="#6366F1" rx="1"/>
+  </g>
+  
+  <!-- Center Icon -->
+  <circle cx="100" cy="100" r="25" fill="#6366F1" opacity="0.1"/>
+  <path d="M85 100L95 110L115 90" stroke="#6366F1" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="0.6"/>
+  
+  <!-- Text -->
+  <text x="100" y="130" text-anchor="middle" fill="#6366F1" font-family="system-ui" font-size="12" font-weight="600" opacity="0.8">QR Code</text>
+  <text x="100" y="145" text-anchor="middle" fill="#9CA3AF" font-family="system-ui" font-size="10">Placeholder</text>
+</svg>
