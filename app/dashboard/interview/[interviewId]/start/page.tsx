@@ -52,25 +52,6 @@ function StartInterview({ params }: StartInterviewProps) {
   const [startTime] = useState<Date>(new Date());
   const [currentTime, setCurrentTime] = useState<Date>(new Date());
 
-  useEffect(() => {
-    getInterviewDetails();
-  }, [getInterviewDetails]);
-
-  // Timer effect
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentTime(new Date());
-    }, 1000);
-    return () => clearInterval(timer);
-  }, []);
-
-  const getElapsedTime = () => {
-    const elapsed = Math.floor((currentTime.getTime() - startTime.getTime()) / 1000);
-    const minutes = Math.floor(elapsed / 60);
-    const seconds = elapsed % 60;
-    return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-  };
-
   const getInterviewDetails = useCallback(async () => {
     if (!params.interviewId) return;
 
@@ -111,6 +92,25 @@ function StartInterview({ params }: StartInterviewProps) {
       console.error("=== DATABASE ERROR ===", err);
     }
   }, [params.interviewId]);
+
+  useEffect(() => {
+    getInterviewDetails();
+  }, [getInterviewDetails]);
+
+  // Timer effect
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const getElapsedTime = () => {
+    const elapsed = Math.floor((currentTime.getTime() - startTime.getTime()) / 1000);
+    const minutes = Math.floor(elapsed / 60);
+    const seconds = elapsed % 60;
+    return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+  };
 
   const totalQuestions = interviewQuestions.length;
   const progress = totalQuestions > 0 ? ((activeQuestionIndex + 1) / totalQuestions) * 100 : 0;
