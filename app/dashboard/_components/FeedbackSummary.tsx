@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { db } from "@/utils/db";
 import { UserAnswer } from "@/utils/schema";
 import { eq } from "drizzle-orm";
@@ -30,11 +30,7 @@ function FeedbackSummary({ interviewId, jobPosition, createdAt }: FeedbackSummar
   const [feedbackList, setFeedbackList] = useState<FeedbackData[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchFeedback();
-  }, [interviewId]);
-
-  const fetchFeedback = async () => {
+  const fetchFeedback = useCallback(async () => {
     try {
       setLoading(true);
       const result = await db
@@ -47,7 +43,11 @@ function FeedbackSummary({ interviewId, jobPosition, createdAt }: FeedbackSummar
     } finally {
       setLoading(false);
     }
-  };
+  }, [interviewId]);
+
+  useEffect(() => {
+    fetchFeedback();
+  }, [fetchFeedback]);
 
   if (loading) {
     return (

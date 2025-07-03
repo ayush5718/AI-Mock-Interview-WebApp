@@ -2,7 +2,7 @@
 import { db } from "@/utils/db";
 import { UserAnswer } from "@/utils/schema";
 import { eq } from "drizzle-orm";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
   Collapsible,
   CollapsibleContent,
@@ -53,7 +53,7 @@ function Feedback({ params }: any) {
   const [feedbackList, setFeedbackList] = useState<FeedbackData[]>([]);
   const [expandedItems, setExpandedItems] = useState<Set<number>>(new Set());
 
-  const getFeedback = async () => {
+  const getFeedback = useCallback(async () => {
     try {
       // First, get all records for this interview
       const allResults = await db
@@ -111,10 +111,11 @@ function Feedback({ params }: any) {
     } catch (err) {
       console.log("Error fetching feedback details", err);
     }
-  };
+  }, [params.interviewId]);
+
   useEffect(() => {
     getFeedback();
-  }, []);
+  }, [getFeedback]);
   // if (feedbackList.length < 5) {
   //   toast.error("you have not recorded the answer please record again");
   // }
@@ -254,7 +255,7 @@ function Feedback({ params }: any) {
                 🎉 Congratulations!
               </h1>
               <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                You've completed your mock interview. Here's your detailed performance analysis and personalized feedback.
+                You&apos;ve completed your mock interview. Here&apos;s your detailed performance analysis and personalized feedback.
               </p>
             </motion.div>
 

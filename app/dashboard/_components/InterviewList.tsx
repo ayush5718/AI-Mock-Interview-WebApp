@@ -3,7 +3,7 @@ import { db } from "@/utils/db";
 import { AiMockInterview } from "@/utils/schema";
 import { useUser } from "@clerk/nextjs";
 import { desc, eq } from "drizzle-orm";
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, useCallback } from "react";
 import { toast } from "sonner";
 import InterviewItemCard from "./InterviewItemCard";
 import FeedbackSummary from "./FeedbackSummary";
@@ -32,7 +32,7 @@ function InterviewList() {
   const [sortBy, setSortBy] = useState("newest"); // newest, oldest, position
   const [viewMode, setViewMode] = useState("grid"); // grid, list, feedback
 
-  const fetchPreviousInterview = async () => {
+  const fetchPreviousInterview = useCallback(async () => {
     if (user?.primaryEmailAddress?.emailAddress) {
       try {
         setLoading(true);
@@ -55,11 +55,11 @@ function InterviewList() {
       console.error("User email address is not available");
       setLoading(false);
     }
-  };
+  }, [user]);
 
   useEffect(() => {
     fetchPreviousInterview();
-  }, [user]);
+  }, [fetchPreviousInterview]);
 
   // Filtered and sorted interviews
   const filteredInterviews = useMemo(() => {
@@ -230,7 +230,7 @@ function InterviewList() {
             Showing {filteredInterviews.length} of {interviews.length} interviews
             {searchTerm && (
               <span className="ml-2 text-blue-600">
-                • Filtered by "{searchTerm}"
+                • Filtered by &quot;{searchTerm}&quot;
               </span>
             )}
             {dateFilter !== "all" && (
@@ -244,7 +244,7 @@ function InterviewList() {
 
           {viewMode === "feedback" && filteredInterviews.length > 0 && (
             <div className="text-sm text-gray-500">
-              💡 Tip: Click "View Details" to see complete feedback for each interview
+              💡 Tip: Click &quot;View Details&quot; to see complete feedback for each interview
             </div>
           )}
         </div>
@@ -261,10 +261,10 @@ function InterviewList() {
           <div className="text-6xl mb-6">🚀</div>
           <h3 className="text-gray-700 text-2xl font-bold mb-3">Ready to Start Your Journey?</h3>
           <p className="text-gray-600 text-lg max-w-md mx-auto mb-6">
-            Your first interview is just one click away! Let's build that confidence together 💪
+            Your first interview is just one click away! Let&apos;s build that confidence together 💪
           </p>
           <div className="text-sm text-gray-500">
-            ✨ Tip: Start with a role you're familiar with to get comfortable
+            ✨ Tip: Start with a role you&apos;re familiar with to get comfortable
           </div>
         </div>
       ) : filteredInterviews.length === 0 ? (
@@ -272,7 +272,7 @@ function InterviewList() {
           <div className="text-5xl mb-4">🔍</div>
           <h3 className="text-gray-700 text-xl font-bold mb-2">Hmm, nothing here!</h3>
           <p className="text-gray-600 text-base mb-6">
-            Try tweaking your filters or search terms to find what you're looking for 🎯
+            Try tweaking your filters or search terms to find what you&apos;re looking for 🎯
           </p>
           <Button
             onClick={() => {

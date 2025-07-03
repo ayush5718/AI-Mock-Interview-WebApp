@@ -108,7 +108,7 @@ function InterviewItemCard({ interviews, onDelete, viewMode = "grid" }: Intervie
               <DialogHeader>
                 <DialogTitle className="text-red-600">🗑️ Delete Interview</DialogTitle>
                 <DialogDescription className="text-gray-600">
-                  Are you sure you want to delete the interview for <strong>"{uppercase}"</strong>?
+                  Are you sure you want to delete the interview for <strong>&quot;{uppercase}&quot;</strong>?
                   <br />
                   <br />
                   This will permanently delete:
@@ -230,7 +230,7 @@ function InterviewItemCard({ interviews, onDelete, viewMode = "grid" }: Intervie
                 Delete Interview
               </DialogTitle>
               <DialogDescription className="text-gray-600">
-                Are you sure you want to delete <strong>"{uppercase}"</strong>?
+                Are you sure you want to delete <strong>&quot;{uppercase}&quot;</strong>?
                 <div className="mt-3 p-3 bg-red-50 rounded-lg border border-red-200">
                   <p className="text-sm text-red-700 font-medium mb-2">This will permanently delete:</p>
                   <ul className="text-sm text-red-600 space-y-1">

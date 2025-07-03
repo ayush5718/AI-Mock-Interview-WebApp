@@ -23,7 +23,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import Webcam from "react-webcam";
 import { motion } from "framer-motion";
 interface Result {
@@ -41,11 +41,7 @@ function Interview({ params }: any) {
   const [interviewData, setInterviewData] = useState<Result | null>(null);
   const [webCamEnable, setWebCamEnable] = useState(false);
 
-  useEffect(() => {
-    getInterviewDetails();
-  }, [params]);
-
-  const getInterviewDetails = async () => {
+  const getInterviewDetails = useCallback(async () => {
     // no interview no fetching of data will happen
     if (!params.interviewId) return; //
 
@@ -64,7 +60,11 @@ function Interview({ params }: any) {
     } catch (error) {
       console.error("Error fetching interview details:", error);
     }
-  };
+  }, [params.interviewId]);
+
+  useEffect(() => {
+    getInterviewDetails();
+  }, [getInterviewDetails]);
 
   function capitalizeFirstLetter(str: string | undefined) {
     if (!str) return ""; // Return an empty string if str is undefined
@@ -117,7 +117,7 @@ function Interview({ params }: any) {
         >
           <div className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-2 rounded-full text-sm font-medium mb-4">
             <Sparkles className="w-4 h-4" />
-            Let's Get Started
+            Let&apos;s Get Started
           </div>
           <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
             Ready for Your Mock Interview?

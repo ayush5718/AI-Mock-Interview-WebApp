@@ -193,7 +193,7 @@ Generate the questions now:`;
             <p className="text-gray-600 text-sm mb-4">Start practicing with AI-generated questions</p>
             <div className="flex items-center justify-center gap-2 text-blue-600 font-medium">
               <Sparkles className="w-4 h-4" />
-              <span>Let's Go!</span>
+              <span>Let&apos;s Go!</span>
             </div>
           </div>
         </div>
@@ -216,7 +216,7 @@ Generate the questions now:`;
                 <Brain className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
               </div>
               <div className="flex-1">
-                <h2 className="text-lg sm:text-xl md:text-2xl font-bold">Let's Set You Up! 🚀</h2>
+                <h2 className="text-lg sm:text-xl md:text-2xl font-bold">Let&apos;s Set You Up! 🚀</h2>
                 <p className="text-blue-100 text-xs sm:text-sm">Quick setup for your perfect interview</p>
               </div>
             </div>
@@ -227,7 +227,7 @@ Generate the questions now:`;
             <form onSubmit={handleFormData} className="space-y-4">
               <div className="text-center mb-4">
                 <p className="text-gray-600 text-sm">
-                  Just 3 quick details and we'll create perfect questions for you! ✨
+                  Just 3 quick details and we&apos;ll create perfect questions for you! ✨
                 </p>
               </div>
 
@@ -312,7 +312,7 @@ Generate the questions now:`;
                   ) : (
                     <div className="flex items-center justify-center gap-2">
                       <Sparkles className="w-4 h-4" />
-                      <span>Let's Go!</span>
+                      <span>Let&apos;s Go!</span>
                     </div>
                   )}
                 </Button>

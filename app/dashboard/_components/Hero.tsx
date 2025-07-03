@@ -147,7 +147,7 @@ function Hero() {
                     <span className="text-sm font-medium text-blue-700">AI Question</span>
                   </div>
                   <p className="text-gray-800 font-medium">
-                    "Tell me about a challenging project you worked on and how you overcame obstacles."
+                    Tell me about a challenging project you worked on and how you overcame obstacles.
                   </p>
                 </div>
 
