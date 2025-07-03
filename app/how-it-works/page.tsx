@@ -158,7 +158,7 @@ export default function HowItWorksPage() {
             </h2>
             
             <p className="text-xl text-blue-100 mb-8">
-              Join thousands who've already leveled up their interview game
+              Join thousands who&apos;ve already leveled up their interview game
             </p>
 
             <Link href="/dashboard">

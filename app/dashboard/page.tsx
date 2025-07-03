@@ -61,7 +61,7 @@ function Dashboard() {
           <UserName />
 
           <p className="text-base sm:text-lg text-gray-600 mt-4 max-w-2xl mx-auto px-4">
-            Ready to level up your interview game? 🚀 Let's create some magic together!
+            Ready to level up your interview game? 🚀 Let&apos;s create some magic together!
           </p>
         </motion.div>
 

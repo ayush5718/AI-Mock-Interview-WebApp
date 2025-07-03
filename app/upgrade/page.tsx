@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { motion } from "framer-motion";
+import Image from "next/image";
 import {
   Heart,
   Star,
@@ -267,9 +268,11 @@ function PricingPage() {
               <Card className="bg-gradient-to-br from-purple-50 to-blue-50 border-2 border-purple-200 hover:border-purple-300 hover:shadow-xl transition-all duration-300">
                 <CardContent className="p-8 text-center">
                   <div className="w-48 h-48 mx-auto bg-white rounded-2xl flex items-center justify-center mb-6 border-2 border-dashed border-purple-300 overflow-hidden shadow-sm">
-                    <img
+                    <Image
                       src="https://i.ibb.co/fGKfdWQn/Whats-App-Image-2025-07-03-at-16-01-57-ae2d2183.jpg"
                       alt="QR Code Placeholder"
+                      width={192}
+                      height={192}
                       className="w-full h-full object-contain p-4"
                     />
                   </div>
@@ -420,7 +423,7 @@ function PricingPage() {
             <CardContent className="p-12">
               <h2 className="text-3xl font-bold mb-4">Ready to Ace Your Next Interview?</h2>
               <p className="text-xl text-purple-100 mb-8">
-                Join thousands of successful candidates who've improved their interview skills with our AI platform.
+                Join thousands of successful candidates who&apos;ve improved their interview skills with our AI platform.
               </p>
               <Button
                 size="lg"

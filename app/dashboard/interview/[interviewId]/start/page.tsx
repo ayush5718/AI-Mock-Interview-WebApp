@@ -3,7 +3,7 @@ import { db } from "@/utils/db";
 import { AiMockInterview } from "@/utils/schema";
 import { eq } from "drizzle-orm";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import QuestionSection from "./_components/QuestionSection";
 import RecAnswerSection from "./_components/RecAnswerSection";
 import { Button } from "@/components/ui/button";
@@ -54,7 +54,7 @@ function StartInterview({ params }: StartInterviewProps) {
 
   useEffect(() => {
     getInterviewDetails();
-  }, [params.interviewId]);
+  }, [getInterviewDetails]);
 
   // Timer effect
   useEffect(() => {
@@ -71,10 +71,7 @@ function StartInterview({ params }: StartInterviewProps) {
     return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
   };
 
-  const totalQuestions = interviewQuestions.length;
-  const progress = totalQuestions > 0 ? ((activeQuestionIndex + 1) / totalQuestions) * 100 : 0;
-
-  const getInterviewDetails = async () => {
+  const getInterviewDetails = useCallback(async () => {
     if (!params.interviewId) return;
 
     try {
@@ -113,7 +110,10 @@ function StartInterview({ params }: StartInterviewProps) {
     } catch (err) {
       console.error("=== DATABASE ERROR ===", err);
     }
-  };
+  }, [params.interviewId]);
+
+  const totalQuestions = interviewQuestions.length;
+  const progress = totalQuestions > 0 ? ((activeQuestionIndex + 1) / totalQuestions) * 100 : 0;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
