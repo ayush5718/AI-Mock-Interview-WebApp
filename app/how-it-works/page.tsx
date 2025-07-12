@@ -263,7 +263,7 @@ function AIGenerationVisual() {
         className="bg-gradient-to-r from-purple-50 to-pink-50 p-4 rounded-xl border border-purple-200"
       >
         <div className="text-xs font-medium text-purple-700 mb-2">Sample Question:</div>
-        <div className="text-sm text-gray-700">"Tell me about the React project mentioned in your resume..."</div>
+        <div className="text-sm text-gray-700">Tell me about the React project mentioned in your resume...</div>
       </motion.div>
     </div>
   );
