@@ -174,7 +174,7 @@ function extractSkills(text: string): string[] {
     return regex.test(text);
   });
 
-  return [...new Set(foundSkills)]; // Remove duplicates
+  return Array.from(new Set(foundSkills)); // Remove duplicates
 }
 
 function extractExperience(text: string): Array<{ title: string; duration?: string }> {
@@ -310,5 +310,5 @@ function extractActivities(text: string): string[] {
     }
   }
   
-  return [...new Set(activities)].slice(0, 5); // Remove duplicates and limit to 5
+  return Array.from(new Set(activities)).slice(0, 5); // Remove duplicates and limit to 5
 }
