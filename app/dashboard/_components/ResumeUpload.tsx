@@ -106,20 +106,45 @@ function ResumeUpload({ onClose }: ResumeUploadProps) {
   const validateAndPreviewPDF = async (file: File) => {
     setIsValidatingPdf(true);
     try {
-      // Simple validation for now
+      // Enhanced validation with PDF content check
       const preview = [];
       preview.push(`✅ PDF File: ${file.name}`);
       preview.push(`📄 Size: ${(file.size / (1024 * 1024)).toFixed(2)} MB`);
-      preview.push(`🤖 Ready for Gemini AI analysis`);
-      preview.push(`📝 Will generate personalized questions based on resume content`);
+
+      // Quick check for PDF compatibility
+      try {
+        const arrayBuffer = await file.arrayBuffer();
+        const uint8Array = new Uint8Array(arrayBuffer);
+        const textDecoder = new TextDecoder('utf-8', { fatal: false });
+        const pdfContent = textDecoder.decode(uint8Array.slice(0, Math.min(2000, uint8Array.length)));
+
+        // Look for text indicators in PDF
+        const hasTextContent = pdfContent.includes('/Text') || pdfContent.includes('BT') || pdfContent.includes('ET');
+
+        if (hasTextContent) {
+          preview.push(`🤖 Compatible with AI analysis`);
+          preview.push(`📝 Will generate personalized questions based on resume content`);
+          toast.success("PDF ready for AI analysis!");
+        } else {
+          preview.push(`⚠️ PDF might be image-based or scanned`);
+          preview.push(`🔄 AI will create questions based on job position if analysis fails`);
+          toast.warning("PDF might be image-based. AI will try to analyze it, but may fall back to generic questions.");
+        }
+      } catch (contentError) {
+        preview.push(`🤖 Ready for AI analysis`);
+        preview.push(`📝 Will generate questions based on resume content or job position`);
+        toast.success("PDF ready for AI analysis!");
+      }
 
       setPdfPreview(preview.join('\n'));
-      toast.success("PDF ready for AI analysis!");
 
     } catch (error) {
       console.error('PDF validation failed:', error);
-      setPdfPreview(`⚠️ PDF validation failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
-      toast.warning("PDF validation failed. Consider using text input for better results.");
+      const preview = [];
+      preview.push(`⚠️ PDF validation failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      preview.push(`🔄 Will create questions based on job position instead`);
+      setPdfPreview(preview.join('\n'));
+      toast.warning("PDF validation failed. Will create interview questions based on your job position.");
     } finally {
       setIsValidatingPdf(false);
     }
@@ -205,53 +230,10 @@ function ResumeUpload({ onClose }: ResumeUploadProps) {
     const hasEducation = resumeData.education?.length > 0;
     const hasActivities = resumeData.activities?.length > 0;
 
-    const inputPrompt = `Generate exactly 15 comprehensive interview questions for a ${position} position.
-
-AVAILABLE RESUME DATA:
-${hasSkills ? `Skills: ${resumeData.skills.join(', ')}` : `Skills: General ${position} skills`}
-${hasExperience ? `Experience: ${resumeData.experience.map((exp: any) => exp.title || exp).join(', ')}` : `Experience: Entry to mid-level ${position} experience`}
-${hasProjects ? `Projects: ${resumeData.projects.slice(0, 3).join(' | ')}` : `Projects: Typical ${position} projects`}
-${hasEducation ? `Education: ${resumeData.education.join(', ')}` : `Education: Computer Science or related field`}
-${hasActivities ? `Activities: ${resumeData.activities.join(', ')}` : `Activities: Professional development activities`}
-
-INSTRUCTIONS:
-Create 15 interview questions divided into 2 rounds:
-
-ROUND 1 - TECHNICAL ROUND (8 questions):
-${hasSkills ? `- Focus on the specific skills mentioned: ${resumeData.skills.slice(0, 5).join(', ')}` : `- Focus on common ${position} technical skills`}
-${hasProjects ? `- Ask about the projects mentioned in the resume` : `- Ask about hypothetical projects relevant to ${position}`}
-${hasExperience ? `- Reference the work experience mentioned` : `- Ask about general work scenarios for ${position}`}
-- Include coding/problem-solving scenarios
-- Test understanding of best practices
-- Include system design or architecture questions
-- Ask about debugging and troubleshooting
-
-ROUND 2 - HR ROUND (7 questions):
-- Career goals and 5-year vision
-- Leadership and teamwork experiences
-- Motivation for the ${position} role
-${hasActivities ? `- Ask about the activities mentioned: ${resumeData.activities.slice(0, 2).join(', ')}` : `- Ask about extracurricular activities and interests`}
-- Learning approach and adaptability
-- Handling conflicts and challenges
-- Strengths, weaknesses, and growth mindset
-
-Return EXACTLY 15 questions in this JSON format:
-[
-  {
-    "question": "Technical question here",
-    "answer": "Expected answer or key points",
-    "round": "Technical",
-    "questionNumber": 1
-  },
-  {
-    "question": "HR question here",
-    "answer": "Expected answer or key points",
-    "round": "HR",
-    "questionNumber": 1
-  }
-]
-
-Make sure to return exactly 8 Technical questions followed by 7 HR questions.`;
+    const inputPrompt = `Create 15 ${position} interview questions:
+Skills: ${hasSkills ? resumeData.skills.slice(0, 3).join(', ') : 'General skills'}
+8 Technical, 7 HR questions
+JSON: [{"question":"...","answer":"...","round":"Technical","questionNumber":1}]`;
 
     try {
       const result = await chatSession.sendMessage(inputPrompt);
@@ -323,10 +305,31 @@ Make sure to return exactly 8 Technical questions followed by 7 HR questions.`;
         } catch (pdfError) {
           console.error("PDF analysis failed:", pdfError);
 
-          // Show specific error message to user
+          // Show user-friendly error message
           const errorMessage = pdfError instanceof Error ? pdfError.message : 'Unknown error';
-          toast.error(`PDF analysis failed: ${errorMessage}`);
-          toast.info("Creating interview based on job position instead...");
+
+          if (errorMessage.includes('overloaded') || errorMessage.includes('503')) {
+            toast.error("AI service is temporarily busy");
+            toast.info("💡 Tip: Try using the 'Enter Text Instead' option for faster results!");
+
+            // Auto-suggest text input
+            setTimeout(() => {
+              toast.info("Click 'Enter Text Instead' button above to continue", { duration: 8000 });
+            }, 2000);
+
+            setIsProcessing(false);
+            return; // Don't proceed with fallback, let user choose text input
+
+          } else if (errorMessage.includes('string did not match the expected pattern')) {
+            toast.error("PDF format not supported by AI analysis");
+            toast.info("Don't worry! Creating interview questions based on your job position instead...");
+          } else if (errorMessage.includes('file format')) {
+            toast.error("PDF file format issue detected");
+            toast.info("Generating interview questions for your role instead...");
+          } else {
+            toast.error("PDF analysis temporarily unavailable");
+            toast.info("Creating interview based on job position instead...");
+          }
 
           // Fallback to position-based questions
           resumeData = {

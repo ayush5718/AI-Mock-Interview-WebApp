@@ -44,78 +44,10 @@ export async function POST(request: NextRequest) {
     // Get the generative model
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
     
-    const prompt = `
-    Analyze this resume PDF and generate exactly 15 comprehensive interview questions for a ${jobPosition} position.
-
-    Please analyze the resume content and create:
-    
-    ROUND 1 - TECHNICAL ROUND (8 questions):
-    Generate questions similar to these examples (DO NOT ask users to write code):
-
-    Examples of GOOD technical questions:
-    - "Can you explain how you used React.js in your [specific project name]?"
-    - "How does JWT work in your authentication system?"
-    - "Why did you choose MongoDB over SQL for your projects?"
-    - "What is the difference between useState and useEffect in React?"
-    - "How would you optimize API calls in a React frontend?"
-    - "Can you explain how Socket.io enables real-time communication?"
-    - "What happens in the backend when a user registers in your app?"
-    - "How do you handle errors in Node.js and Express.js?"
-    - "What's the difference between SQL and NoSQL databases?"
-    - "In your projects, how did you implement authentication securely?"
-
-    Focus on:
-    - Explaining concepts and technologies from their resume
-    - How they implemented specific features in their projects
-    - Understanding of technologies they've used
-    - Problem-solving approaches they've taken
-    - NO CODE WRITING QUESTIONS
-
-    ROUND 2 - HR ROUND (7 questions):
-    Generate questions similar to these examples:
-
-    Examples of GOOD HR questions:
-    - "Tell me about yourself in 2-3 sentences."
-    - "Why did you choose web development as your focus area?"
-    - "What was the biggest challenge you faced during your internship?"
-    - "Where do you see yourself in the next 2 years?"
-    - "Why should we hire you for this ${jobPosition} role?"
-    - "What motivates you to work in technology?"
-    - "How do you stay updated with new technologies?"
-    - "Tell me about a project you're most proud of."
-    - "How do you handle tight deadlines and pressure?"
-    - "What interests you most about this ${jobPosition} position?"
-
-    Focus on:
-    - Career motivation and goals
-    - Personal experiences and challenges
-    - Interest in the role and company
-    - Soft skills and personality
-    - Short, conversational questions
-
-    Return EXACTLY 15 questions in this JSON format:
-    [
-      {
-        "question": "Your technical question here based on resume content",
-        "answer": "Expected answer or key points to look for",
-        "round": "Technical",
-        "questionNumber": 1
-      },
-      {
-        "question": "Your HR question here based on resume content",
-        "answer": "Expected answer or key points to look for",
-        "round": "HR", 
-        "questionNumber": 1
-      }
-    ]
-
-    Make sure to:
-    1. Reference specific skills, projects, and experiences from the resume
-    2. Create realistic scenarios based on their background
-    3. Return exactly 8 Technical questions followed by 7 HR questions
-    4. Make questions challenging but appropriate for their experience level
-    5. Return valid JSON format only
-    `;
+    const prompt = `Create 15 interview questions for ${jobPosition} from this resume:
+8 Technical (explain skills/projects from resume, no coding)
+7 HR (career goals, teamwork, challenges)
+Return JSON: [{"question":"...","answer":"...","round":"Technical","questionNumber":1}]`;
 
     // Send the PDF and prompt to Gemini
     const result = await model.generateContent([
