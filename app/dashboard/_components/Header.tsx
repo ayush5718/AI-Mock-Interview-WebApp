@@ -12,7 +12,7 @@ const navigation = [
   { name: "Home", href: "/" },
   { name: "Dashboard", href: "/dashboard" },
   { name: "How it Works", href: "/how-it-works" },
-  { name: "Features", href: "/features" },
+  // { name: "Features", href: "/features" },
   { name: "Support Us", href: "/upgrade" },
 ];
 
@@ -24,11 +24,11 @@ function Header() {
     router.push("/dashboard");
   };
   return (
-    <div className="bg-white/95 backdrop-blur-lg border-b border-gray-200/50 shadow-sm">
-      <header className="absolute inset-x-0 top-0 z-50">
+    <div className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-lg border-b border-gray-200/50 shadow-sm">
+      <header>
         <nav
           aria-label="Global"
-          className="flex items-center justify-between p-4 sm:p-6 lg:px-8"
+          className="flex items-center justify-between p-4 sm:p-6 lg:px-8 max-w-7xl mx-auto"
         >
           <div className="flex lg:flex-1">
             <Link href={"/"} className="-m-1.5 p-1.5 hover:scale-105 transition-transform duration-200">

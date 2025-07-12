@@ -9,6 +9,7 @@ import RecAnswerSection from "./_components/RecAnswerSection";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import Webcam from "react-webcam";
 import {
   ChevronLeft,
   ChevronRight,
@@ -121,7 +122,7 @@ function StartInterview({ params }: StartInterviewProps) {
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-white/80 backdrop-blur-md border-b border-gray-200/50 sticky top-0 z-40"
+        className="bg-white/80 backdrop-blur-md border-b border-gray-200/50 sticky top-16 lg:top-0 z-40"
       >
         <div className="container mx-auto px-4 sm:px-6 py-4">
           <div className="flex items-center justify-between">
@@ -177,14 +178,66 @@ function StartInterview({ params }: StartInterviewProps) {
       </motion.div>
 
       {/* Main Content */}
-      <div className="container mx-auto px-4 sm:px-6 py-6">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Question Section */}
+      <div className="container mx-auto px-4 sm:px-6 py-2 sm:py-6">
+        {/* Mobile Layout - Single Screen */}
+        <div className="lg:hidden">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="bg-white/80 backdrop-blur-md rounded-xl p-3 border border-gray-200/50 shadow-lg  flex flex-col"
+          >
+            {/* Question Section - Compact */}
+            <div className="flex-shrink-0">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-8 h-8 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 flex items-center justify-center">
+                  <span className="text-white text-sm font-bold">{activeQuestionIndex + 1}</span>
+                </div>
+                <div>
+                  <h3 className="font-semibold text-gray-900 text-sm">Question {activeQuestionIndex + 1}</h3>
+                  <p className="text-xs text-gray-600">{interviewQuestions.length} total questions</p>
+                </div>
+              </div>
+
+              <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-3 mb-2">
+                <p className="text-gray-800 text-sm leading-relaxed font-medium">
+                  {interviewQuestions[activeQuestionIndex]?.question}
+                </p>
+              </div>
+            </div>
+
+            {/* Video Preview - Small Box */}
+            <div>
+              <div className="relative bg-gradient-to-br from-gray-900 to-gray-800 rounded-lg overflow-hidden aspect-video  mb-3">
+                <Webcam
+                  mirrored={true}
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+                {/* Recording Indicator */}
+                {/* Add recording indicator here if needed */}
+              </div>
+            </div>
+
+            {/* Recording Controls - Bottom */}
+            <div>
+              <RecAnswerSection
+                mockInterviewQuestion={interviewQuestions}
+                activeQuestionIndex={activeQuestionIndex}
+                interviewData={interviewData || { mockId: "" }}
+                mobileMode={true}
+              />
+            </div>
+          </motion.div>
+        </div>
+
+        {/* Desktop Layout - Full Information */}
+        <div className="hidden lg:grid lg:grid-cols-2 gap-6">
+          {/* Question Section - Shows first on mobile */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.2 }}
-            className="order-2 lg:order-1"
+            className="order-1 lg:order-1"
           >
             <QuestionSection
               mockInterviewQuestion={interviewQuestions || []}
@@ -192,17 +245,18 @@ function StartInterview({ params }: StartInterviewProps) {
             />
           </motion.div>
 
-          {/* Recording Section */}
+          {/* Recording Section - Shows second on mobile */}
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.3 }}
-            className="order-1 lg:order-2"
+            className="order-2 lg:order-2"
           >
             <RecAnswerSection
               mockInterviewQuestion={interviewQuestions}
               activeQuestionIndex={activeQuestionIndex}
               interviewData={interviewData || { mockId: "" }}
+              mobileMode={false}
             />
           </motion.div>
         </div>

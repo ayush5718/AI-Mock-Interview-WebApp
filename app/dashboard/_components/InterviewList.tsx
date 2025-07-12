@@ -120,46 +120,34 @@ function InterviewList() {
     return { total, thisMonth, thisWeek };
   }, [interviews]);
   return (
-    <div className="space-y-6">
-      {/* Header with Statistics */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
-        <div>
-          <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-gray-900 to-blue-900 bg-clip-text text-transparent">
-            Your Interview Journey 🚀
-          </h2>
-          <p className="text-gray-600 mt-1">
-            Track your progress and level up your skills
-          </p>
+    <div className="space-y-4">
+      {/* Statistics Cards */}
+      <div className="grid grid-cols-3 gap-3 mb-4">
+        <div className="bg-gradient-to-br from-blue-50 to-blue-100 px-3 py-2 rounded-lg border border-blue-200">
+          <div className="text-blue-600 text-xs font-semibold uppercase tracking-wide">Total</div>
+          <div className="text-blue-800 text-xl font-bold">{stats.total}</div>
         </div>
-
-        {/* Statistics Cards */}
-        <div className="flex gap-3 mt-4 md:mt-0">
-          <div className="bg-gradient-to-br from-blue-50 to-blue-100 px-4 py-3 rounded-xl border border-blue-200 hover:shadow-md transition-shadow">
-            <div className="text-blue-600 text-xs font-semibold uppercase tracking-wide">Total</div>
-            <div className="text-blue-800 text-2xl font-bold">{stats.total}</div>
-          </div>
-          <div className="bg-gradient-to-br from-green-50 to-green-100 px-4 py-3 rounded-xl border border-green-200 hover:shadow-md transition-shadow">
-            <div className="text-green-600 text-xs font-semibold uppercase tracking-wide">This Month</div>
-            <div className="text-green-800 text-2xl font-bold">{stats.thisMonth}</div>
-          </div>
-          <div className="bg-gradient-to-br from-purple-50 to-purple-100 px-4 py-3 rounded-xl border border-purple-200 hover:shadow-md transition-shadow">
-            <div className="text-purple-600 text-xs font-semibold uppercase tracking-wide">This Week</div>
-            <div className="text-purple-800 text-2xl font-bold">{stats.thisWeek}</div>
-          </div>
+        <div className="bg-gradient-to-br from-green-50 to-green-100 px-3 py-2 rounded-lg border border-green-200">
+          <div className="text-green-600 text-xs font-semibold uppercase tracking-wide">This Month</div>
+          <div className="text-green-800 text-xl font-bold">{stats.thisMonth}</div>
+        </div>
+        <div className="bg-gradient-to-br from-purple-50 to-purple-100 px-3 py-2 rounded-lg border border-purple-200">
+          <div className="text-purple-600 text-xs font-semibold uppercase tracking-wide">This Week</div>
+          <div className="text-purple-800 text-xl font-bold">{stats.thisWeek}</div>
         </div>
       </div>
 
       {/* Filters and Controls */}
-      <div className="bg-white/70 backdrop-blur-sm p-6 rounded-2xl border border-gray-200 shadow-lg">
-        <div className="flex flex-col md:flex-row gap-4 items-start md:items-center">
+      <div className="bg-gray-50/50 p-4 rounded-xl border border-gray-200">
+        <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
           {/* Search */}
-          <div className="relative flex-1 max-w-md">
+          <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
             <Input
-              placeholder="Search by job position or description..."
+              placeholder="Search interviews..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10"
+              className="pl-10 h-9"
             />
           </div>
 
@@ -198,28 +186,25 @@ function InterviewList() {
               size="sm"
               variant={viewMode === "grid" ? "default" : "ghost"}
               onClick={() => setViewMode("grid")}
-              className="h-8 px-2"
+              className="h-8 px-2 text-xs"
             >
-              <Grid className="h-4 w-4 mr-1" />
-              Grid
+              <Grid className="h-3 w-3" />
             </Button>
             <Button
               size="sm"
               variant={viewMode === "list" ? "default" : "ghost"}
               onClick={() => setViewMode("list")}
-              className="h-8 px-2"
+              className="h-8 px-2 text-xs"
             >
-              <List className="h-4 w-4 mr-1" />
-              List
+              <List className="h-3 w-3" />
             </Button>
             <Button
               size="sm"
               variant={viewMode === "feedback" ? "default" : "ghost"}
               onClick={() => setViewMode("feedback")}
-              className="h-8 px-2"
+              className="h-8 px-2 text-xs"
             >
-              <BarChart3 className="h-4 w-4 mr-1" />
-              Feedback
+              <BarChart3 className="h-3 w-3" />
             </Button>
           </div>
         </div>
@@ -299,7 +284,7 @@ function InterviewList() {
       ) : (
         <div className={`${
           viewMode === "grid"
-            ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"
+            ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-2 gap-4"
             : "space-y-3"
         }`}>
           {filteredInterviews.map((data) => (

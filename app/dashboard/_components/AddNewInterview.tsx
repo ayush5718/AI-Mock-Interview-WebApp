@@ -13,13 +13,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { chatSession } from "@/utils/GeminiAIModal";
-import { Loader2, Sparkles, Rocket, Brain, Target, Plus, X } from "lucide-react";
+import { Loader2, Sparkles, Rocket, Brain, Target, Plus, X, FileText, Upload } from "lucide-react";
 import { AiMockInterview } from "@/utils/schema";
 import { db } from "@/utils/db";
 import { v4 as uuidv4 } from "uuid";
 import { useUser } from "@clerk/nextjs";
 import moment from "moment";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 interface FormState {
   jobPosition: String;
   jobDescription: String;
@@ -39,6 +40,7 @@ interface AiMockInterview {
 function AddNewInterview() {
   const questionCount = process.env.NEXT_PUBLIC_INTERVIEW_QUESTION_COUNT;
   const [openDialog, setOpenDialog] = useState(false);
+
   const [loading, setLoading] = useState(false);
   const [jsonResponse, setJsonResponse] = useState<string>("");
   const { isSignedIn, user, isLoaded } = useUser();
@@ -176,28 +178,51 @@ Generate the questions now:`;
   };
   // console.log(jsonResponse);
   return (
-    <div className="w-full">
-      <motion.div
-        whileHover={{ scale: 1.02 }}
-        whileTap={{ scale: 0.98 }}
-        className="relative group cursor-pointer"
-        onClick={() => setOpenDialog(true)}
-      >
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl blur-lg opacity-20 group-hover:opacity-30 transition-opacity"></div>
-        <div className="relative bg-white rounded-2xl p-8 border-2 border-dashed border-gray-300 hover:border-blue-400 transition-all duration-300 shadow-lg hover:shadow-xl">
-          <div className="text-center">
-            <div className="w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-              <Plus className="w-8 h-8 text-white" />
-            </div>
-            <h3 className="text-xl font-bold text-gray-900 mb-2">Create New Interview</h3>
-            <p className="text-gray-600 text-sm mb-4">Start practicing with AI-generated questions</p>
-            <div className="flex items-center justify-center gap-2 text-blue-600 font-medium">
-              <Sparkles className="w-4 h-4" />
-              <span>Let&apos;s Go!</span>
+    <div className="w-full space-y-4">
+      {/* Two Options - Stacked for card layout */}
+      <div className="space-y-4">
+        {/* Resume-Based Interview */}
+        <motion.div
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          className="relative group cursor-pointer"
+          onClick={() => route.push('/dashboard/resume-interview')}
+        >
+          <div className="bg-gradient-to-r from-green-500 to-blue-500 rounded-xl p-4 text-white hover:shadow-lg transition-all duration-300">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+                <FileText className="w-6 h-6 text-white" />
+              </div>
+              <div className="flex-1">
+                <h3 className="font-bold text-white mb-1">AI Resume Interview</h3>
+                <p className="text-white/80 text-sm">Upload resume → Get 15 personalized questions</p>
+              </div>
+              <Upload className="w-5 h-5 text-white/80" />
             </div>
           </div>
-        </div>
-      </motion.div>
+        </motion.div>
+
+        {/* Custom Interview */}
+        <motion.div
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          className="relative group cursor-pointer"
+          onClick={() => setOpenDialog(true)}
+        >
+          <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl p-4 text-white hover:shadow-lg transition-all duration-300">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+                <Brain className="w-6 h-6 text-white" />
+              </div>
+              <div className="flex-1">
+                <h3 className="font-bold text-white mb-1">Custom Interview</h3>
+                <p className="text-white/80 text-sm">5 questions based on job details</p>
+              </div>
+              <Sparkles className="w-5 h-5 text-white/80" />
+            </div>
+          </div>
+        </motion.div>
+      </div>
 
       <Dialog open={openDialog}>
         <DialogContent className="max-w-4xl w-[95vw] max-h-[90vh] rounded-2xl border-0 shadow-2xl overflow-hidden p-0">
@@ -321,6 +346,8 @@ Generate the questions now:`;
           </div>
         </DialogContent>
       </Dialog>
+
+
     </div>
   );
 }

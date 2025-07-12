@@ -4,51 +4,52 @@ import { motion } from "framer-motion";
 import { ArrowRight, Play, Zap, Target, TrendingUp, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import Header from "../dashboard/_components/Header";
 
 export default function HowItWorksPage() {
   const steps = [
     {
       id: 1,
-      title: "Choose Your Path",
-      subtitle: "Pick your role & level",
-      icon: "🎯",
-      description: "Select your job role and experience level for personalized questions",
+      title: "Upload Your Resume",
+      subtitle: "PDF or text format",
+      icon: "📄",
+      description: "Upload your resume and our AI analyzes your skills, experience, and projects",
       visual: "role-selection",
       color: "from-blue-500 to-cyan-500"
     },
     {
       id: 2,
-      title: "AI Generates Questions",
-      subtitle: "Smart questions just for you",
+      title: "AI Generates 15 Questions",
+      subtitle: "Personalized to your background",
       icon: "🤖",
-      description: "Our AI creates tailored interview questions based on your profile",
+      description: "Get 15 tailored interview questions based on your actual resume content",
       visual: "ai-generation",
       color: "from-purple-500 to-pink-500"
     },
     {
       id: 3,
       title: "Practice & Record",
-      subtitle: "Speak your answers",
+      subtitle: "Voice recording with video",
       icon: "🎤",
-      description: "Answer questions naturally while we record your responses",
+      description: "Answer questions naturally with voice recording and video preview",
       visual: "recording",
       color: "from-green-500 to-emerald-500"
     },
     {
       id: 4,
-      title: "Get Instant Feedback",
-      subtitle: "AI analyzes everything",
+      title: "Get AI Feedback",
+      subtitle: "Instant analysis & ratings",
       icon: "⚡",
-      description: "Receive detailed feedback on content, delivery, and confidence",
+      description: "Receive detailed AI feedback with ratings and improvement suggestions",
       visual: "feedback",
       color: "from-orange-500 to-red-500"
     },
     {
       id: 5,
-      title: "Track Progress",
-      subtitle: "Level up your skills",
+      title: "Track Your Progress",
+      subtitle: "Monitor improvement",
       icon: "📈",
-      description: "Monitor improvement and unlock achievements",
+      description: "View your interview history and track performance over time",
       visual: "progress",
       color: "from-indigo-500 to-purple-500"
     }
@@ -56,8 +57,9 @@ export default function HowItWorksPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
+      <Header />
       {/* Hero Section */}
-      <section className="relative overflow-hidden pt-20 pb-16">
+      <section className="relative overflow-hidden pt-32 pb-16">
         <div className="container mx-auto px-6">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -71,14 +73,14 @@ export default function HowItWorksPage() {
             </div>
             
             <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold bg-gradient-to-r from-gray-900 via-blue-900 to-purple-900 bg-clip-text text-transparent mb-6 leading-tight">
-              Master Interviews in
+              AI Interview Coach in
               <span className="block text-transparent bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text">
                 5 Simple Steps
               </span>
             </h1>
-            
+
             <p className="text-lg sm:text-xl text-gray-600 mb-8 max-w-2xl mx-auto px-4">
-              From zero to interview hero in minutes. No boring tutorials, just pure practice.
+              Upload your resume, get personalized questions, practice with AI feedback. Land your dream job faster.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -154,11 +156,11 @@ export default function HowItWorksPage() {
             className="max-w-3xl mx-auto"
           >
             <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">
-              Ready to Ace Your Interview?
+              Ready to Get Personalized Questions?
             </h2>
-            
+
             <p className="text-xl text-blue-100 mb-8">
-              Join thousands who&apos;ve already leveled up their interview game
+              Upload your resume and start practicing with AI-generated questions tailored just for you
             </p>
 
             <Link href="/dashboard">
@@ -198,31 +200,30 @@ function StepVisual({ step }: { step: any }) {
 function RoleSelectionVisual() {
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-2 gap-3">
-        {["Frontend Dev", "Backend Dev", "Full Stack", "Data Scientist"].map((role, i) => (
+      {/* Resume Upload Area */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="border-2 border-dashed border-blue-300 rounded-xl p-6 text-center bg-blue-50"
+      >
+        <div className="text-4xl mb-2">📄</div>
+        <div className="text-sm font-medium text-blue-700 mb-1">Drop your resume here</div>
+        <div className="text-xs text-blue-600">PDF or text format</div>
+      </motion.div>
+
+      {/* Analysis Preview */}
+      <div className="space-y-2">
+        <div className="text-xs font-medium text-gray-600">AI Analysis Preview:</div>
+        {["Skills: React, Node.js, Python", "Experience: 3 years", "Projects: E-commerce, Dashboard"].map((item, i) => (
           <motion.div
-            key={role}
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: i * 0.1 }}
-            className={`p-3 rounded-xl border-2 text-center text-sm font-medium cursor-pointer transition-all ${
-              i === 0 ? 'border-blue-500 bg-blue-50 text-blue-700' : 'border-gray-200 hover:border-blue-300'
-            }`}
+            key={i}
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: i * 0.2 }}
+            className="bg-gradient-to-r from-green-50 to-blue-50 p-2 rounded-lg text-xs"
           >
-            {role}
+            ✓ {item}
           </motion.div>
-        ))}
-      </div>
-      <div className="flex justify-center gap-2 mt-4">
-        {[1, 2, 3, 4, 5].map((level, i) => (
-          <div
-            key={level}
-            className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ${
-              i < 3 ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-500'
-            }`}
-          >
-            {level}
-          </div>
         ))}
       </div>
     </div>
@@ -236,21 +237,34 @@ function AIGenerationVisual() {
         <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
           <span className="text-white text-sm">🤖</span>
         </div>
-        <div className="flex-1 h-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full"></div>
+        <div className="text-sm font-medium text-purple-700">Generating 15 personalized questions...</div>
       </div>
-      
-      {[1, 2, 3].map((_, i) => (
-        <motion.div
-          key={i}
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: i * 0.2 }}
-          className="bg-gradient-to-r from-purple-50 to-pink-50 p-4 rounded-xl border border-purple-200"
-        >
-          <div className="h-3 bg-gradient-to-r from-purple-300 to-pink-300 rounded mb-2"></div>
-          <div className="h-2 bg-gradient-to-r from-purple-200 to-pink-200 rounded w-3/4"></div>
-        </motion.div>
-      ))}
+
+      <div className="grid grid-cols-5 gap-2 mb-4">
+        {Array.from({length: 15}, (_, i) => (
+          <motion.div
+            key={i}
+            initial={{ opacity: 0, scale: 0 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: i * 0.1 }}
+            className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ${
+              i < 10 ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white' : 'bg-gray-200 text-gray-500'
+            }`}
+          >
+            {i + 1}
+          </motion.div>
+        ))}
+      </div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 1.5 }}
+        className="bg-gradient-to-r from-purple-50 to-pink-50 p-4 rounded-xl border border-purple-200"
+      >
+        <div className="text-xs font-medium text-purple-700 mb-2">Sample Question:</div>
+        <div className="text-sm text-gray-700">"Tell me about the React project mentioned in your resume..."</div>
+      </motion.div>
     </div>
   );
 }

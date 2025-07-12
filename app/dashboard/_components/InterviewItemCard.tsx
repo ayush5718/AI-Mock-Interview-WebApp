@@ -85,7 +85,7 @@ function InterviewItemCard({ interviews, onDelete, viewMode = "grid" }: Intervie
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.3 }}
-          className="w-full p-4 bg-white rounded-xl border border-gray-200 hover:border-blue-300 hover:shadow-lg transition-all duration-300 relative group"
+          className="w-full p-3 sm:p-4 bg-white rounded-lg sm:rounded-xl border border-gray-200 hover:border-blue-300 hover:shadow-lg transition-all duration-300 relative group"
         >
           {/* Delete button for list view */}
           <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
@@ -151,41 +151,41 @@ function InterviewItemCard({ interviews, onDelete, viewMode = "grid" }: Intervie
             </DialogContent>
           </Dialog>
 
-          <div className="flex items-center justify-between pr-12">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pr-8 sm:pr-12">
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-2">
-                <Briefcase className="w-5 h-5 text-blue-600" />
-                <h3 className="text-lg font-semibold text-gray-900">{uppercase}</h3>
+                <Briefcase className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600" />
+                <h3 className="text-base sm:text-lg font-semibold text-gray-900">{uppercase}</h3>
               </div>
-              <p className="text-gray-600 text-sm mt-1 line-clamp-2">{interviews?.jobDesc}</p>
-              <div className="flex items-center gap-4 mt-3 text-sm text-gray-500">
+              <p className="text-gray-600 text-xs sm:text-sm mt-1 line-clamp-2">{interviews?.jobDesc}</p>
+              <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 mt-2 sm:mt-3 text-xs sm:text-sm text-gray-500">
                 <div className="flex items-center gap-1">
-                  <Clock className="w-4 h-4" />
+                  <Clock className="w-3 h-3 sm:w-4 sm:h-4" />
                   <span>{interviews?.jobExperience} years</span>
                 </div>
-                <span>•</span>
+                <span className="hidden sm:inline">•</span>
                 <div className="flex items-center gap-1">
-                  <Calendar className="w-4 h-4" />
+                  <Calendar className="w-3 h-3 sm:w-4 sm:h-4" />
                   <span>{interviews?.createdAt}</span>
                 </div>
               </div>
             </div>
-            <div className="flex gap-2 flex-col sm:flex-row">
+            <div className="flex gap-2 flex-col sm:flex-row w-full sm:w-auto">
               <Button
                 size="sm"
                 variant="outline"
                 onClick={onFeedback}
-                className="border-2 border-gray-200 hover:border-blue-400 hover:text-blue-600 transition-colors rounded-xl"
+                className="border-2 border-gray-200 hover:border-blue-400 hover:text-blue-600 transition-colors rounded-lg sm:rounded-xl text-xs sm:text-sm"
               >
-                <BarChart3 className="w-4 h-4 mr-1" />
+                <BarChart3 className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
                 Feedback
               </Button>
               <Button
-                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl shadow-md hover:shadow-lg transition-all"
+                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-lg sm:rounded-xl shadow-md hover:shadow-lg transition-all text-xs sm:text-sm"
                 size="sm"
                 onClick={onStart}
               >
-                <Play className="w-4 h-4 mr-1" />
+                <Play className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
                 Start
               </Button>
             </div>
@@ -205,21 +205,21 @@ function InterviewItemCard({ interviews, onDelete, viewMode = "grid" }: Intervie
         className="group relative bg-white rounded-2xl border border-gray-200 hover:border-blue-300 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden"
       >
         {/* Gradient Header */}
-        <div className="bg-gradient-to-r from-blue-500 to-purple-600 p-4 relative">
+        <div className="bg-gradient-to-r from-blue-500 to-purple-600 p-3 sm:p-4 relative">
           {/* Delete button */}
           <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
             <DialogTrigger asChild>
               <Button
                 size="sm"
                 variant="ghost"
-                className="absolute top-2 right-2 h-8 w-8 p-0 bg-white/20 hover:bg-white/30 text-white border-0"
+                className="absolute top-2 right-2 h-7 w-7 sm:h-8 sm:w-8 p-0 bg-white/20 hover:bg-white/30 text-white border-0"
                 disabled={isDeleting}
                 title="Delete Interview"
               >
                 {isDeleting ? (
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                  <div className="animate-spin rounded-full h-3 w-3 sm:h-4 sm:w-4 border-b-2 border-white"></div>
                 ) : (
-                  <Trash2 className="h-4 w-4" />
+                  <Trash2 className="h-3 w-3 sm:h-4 sm:w-4" />
                 )}
               </Button>
             </DialogTrigger>
@@ -276,16 +276,16 @@ function InterviewItemCard({ interviews, onDelete, viewMode = "grid" }: Intervie
         {/* Header Content */}
         <div className="text-white">
           <div className="flex items-center gap-2 mb-2">
-            <Briefcase className="w-5 h-5 text-white/80" />
-            <h3 className="font-bold text-lg truncate pr-8">{uppercase}</h3>
+            <Briefcase className="w-4 h-4 sm:w-5 sm:h-5 text-white/80" />
+            <h3 className="font-bold text-base sm:text-lg truncate pr-6 sm:pr-8">{uppercase}</h3>
           </div>
-          <div className="flex items-center gap-4 text-sm text-white/80">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 text-xs sm:text-sm text-white/80">
             <div className="flex items-center gap-1">
-              <Clock className="w-4 h-4" />
+              <Clock className="w-3 h-3 sm:w-4 sm:h-4" />
               <span>{interviews?.jobExperience}y exp</span>
             </div>
             <div className="flex items-center gap-1">
-              <Calendar className="w-4 h-4" />
+              <Calendar className="w-3 h-3 sm:w-4 sm:h-4" />
               <span>{interviews?.createdAt}</span>
             </div>
           </div>
@@ -293,33 +293,31 @@ function InterviewItemCard({ interviews, onDelete, viewMode = "grid" }: Intervie
       </div>
 
       {/* Card Body */}
-      <div className="p-4">
+      <div className="p-3 sm:p-4">
         {/* Tech Stack */}
-        <div className="mb-4">
-          <p className="text-gray-600 text-sm line-clamp-2 leading-relaxed">
+        <div className="mb-3 sm:mb-4">
+          <p className="text-gray-600 text-xs sm:text-sm line-clamp-2 leading-relaxed">
             {interviews?.jobDesc}
           </p>
         </div>
 
         {/* Action Buttons */}
-        <div className="flex gap-2">
+        <div className="flex flex-col sm:flex-row gap-2">
           <Button
             size="sm"
             variant="outline"
             onClick={onFeedback}
-            className="flex-1 border-2 border-gray-200 hover:border-blue-400 hover:text-blue-600 transition-colors rounded-xl"
+            className="flex-1 border-2 border-gray-200 hover:border-blue-400 hover:text-blue-600 transition-colors rounded-lg sm:rounded-xl text-xs sm:text-sm"
           >
-            <BarChart3 className="w-4 h-4 mr-1" />
-            <span className="hidden sm:inline">Feedback</span>
-            <span className="sm:hidden">📊</span>
+            <BarChart3 className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
+            <span>Feedback</span>
           </Button>
           <Button
             onClick={onStart}
-            className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl shadow-md hover:shadow-lg transition-all"
+            className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-lg sm:rounded-xl shadow-md hover:shadow-lg transition-all text-xs sm:text-sm"
           >
-            <Play className="w-4 h-4 mr-1" />
-            <span className="hidden sm:inline">Start</span>
-            <span className="sm:hidden">▶️</span>
+            <Play className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
+            <span>Start</span>
           </Button>
         </div>
 

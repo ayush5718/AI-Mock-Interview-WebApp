@@ -29,7 +29,7 @@ function Hero() {
       </div>
 
       {/* Main Content */}
-      <div className="relative z-10 container mx-auto px-6 pt-20 pb-8">
+      <div className="relative z-10 container mx-auto px-6 pt-32 pb-8">
         <div className="grid lg:grid-cols-2 gap-12 items-start lg:items-center">
 
           {/* Left Column - Content */}
@@ -37,7 +37,7 @@ function Hero() {
             {/* Badge */}
             <div className="inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm border border-blue-200 rounded-full px-4 py-2 text-sm font-medium text-blue-700 shadow-sm">
               <Sparkles className="w-4 h-4" />
-              AI-Powered Interview Practice
+              AI-Powered Resume Analysis
               <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
             </div>
 
@@ -45,27 +45,27 @@ function Hero() {
             <div className="space-y-4">
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
                 <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 bg-clip-text text-transparent">
-                  Master Your
+                  AI Interview Coach
                 </span>
                 <br />
                 <span className="text-gray-900">
-                  Dream Job Interview
+                  Tailored to Your Resume
                 </span>
               </h1>
 
               <p className="text-xl text-gray-600 leading-relaxed max-w-lg">
-                Practice with AI-generated questions, get instant feedback, and boost your confidence.
-                <span className="font-semibold text-blue-600"> Land your dream job</span> with personalized interview coaching.
+                Upload your resume and get 15 personalized interview questions. Practice with AI feedback and
+                <span className="font-semibold text-blue-600"> ace your next interview</span> with confidence.
               </p>
             </div>
 
             {/* Features List */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {[
-                { icon: Brain, text: "AI-Generated Questions", color: "text-blue-600" },
-                { icon: Mic, text: "Voice Recording", color: "text-purple-600" },
-                { icon: Target, text: "Instant Feedback", color: "text-green-600" },
-                { icon: TrendingUp, text: "Performance Tracking", color: "text-orange-600" }
+                { icon: Brain, text: "Resume-Based Questions", color: "text-blue-600" },
+                { icon: Mic, text: "Voice Recording & Analysis", color: "text-purple-600" },
+                { icon: Target, text: "AI-Powered Feedback", color: "text-green-600" },
+                { icon: TrendingUp, text: "Progress Tracking", color: "text-orange-600" }
               ].map((feature, index) => (
                 <div key={index} className="flex items-center gap-3 bg-white/60 backdrop-blur-sm rounded-lg p-3 border border-gray-200">
                   <feature.icon className={`w-5 h-5 ${feature.color}`} />
@@ -202,8 +202,8 @@ function Hero() {
         <div className="mt-16 lg:mt-20">
           <div className="bg-white/70 backdrop-blur-sm rounded-2xl border border-gray-200 shadow-lg p-6 lg:p-8">
             <div className="text-center mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">Why Choose InterviewAI?</h2>
-              <p className="text-gray-600">Everything you need to ace your next interview</p>
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">Why Choose Our AI Interview Coach?</h2>
+              <p className="text-gray-600">The most advanced resume-based interview preparation platform</p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -211,40 +211,40 @@ function Hero() {
                 <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:shadow-lg transition-shadow">
                   <Brain className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="font-bold text-gray-900 mb-2">Smart AI Questions</h3>
-                <p className="text-sm text-gray-600 leading-relaxed">Tailored questions based on your role and experience level for realistic practice</p>
+                <h3 className="font-bold text-gray-900 mb-2">Resume Analysis</h3>
+                <p className="text-sm text-gray-600 leading-relaxed">Upload your resume and get 15 personalized questions based on your actual skills and experience</p>
               </div>
 
               <div className="text-center group hover:scale-105 transition-transform duration-200">
                 <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:shadow-lg transition-shadow">
-                  <Target className="w-8 h-8 text-white" />
+                  <Mic className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="font-bold text-gray-900 mb-2">Instant Feedback</h3>
-                <p className="text-sm text-gray-600 leading-relaxed">Get detailed analysis and improvement suggestions immediately after each answer</p>
+                <h3 className="font-bold text-gray-900 mb-2">Voice Recording</h3>
+                <p className="text-sm text-gray-600 leading-relaxed">Practice speaking naturally with real-time voice recording and speech-to-text analysis</p>
               </div>
 
               <div className="text-center group hover:scale-105 transition-transform duration-200">
                 <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:shadow-lg transition-shadow">
-                  <TrendingUp className="w-8 h-8 text-white" />
+                  <Target className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="font-bold text-gray-900 mb-2">Track Progress</h3>
-                <p className="text-sm text-gray-600 leading-relaxed">Monitor your improvement with detailed performance analytics and insights</p>
+                <h3 className="font-bold text-gray-900 mb-2">AI Feedback</h3>
+                <p className="text-sm text-gray-600 leading-relaxed">Get instant AI-powered feedback with ratings and improvement suggestions for every answer</p>
               </div>
             </div>
 
             {/* Quick Stats Row */}
             <div className="grid grid-cols-3 gap-4 mt-8 pt-6 border-t border-gray-200">
               <div className="text-center">
-                <div className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">1000+</div>
-                <div className="text-xs text-gray-500 font-medium">Active Users</div>
+                <div className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">15</div>
+                <div className="text-xs text-gray-500 font-medium">Questions per Resume</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">50K+</div>
-                <div className="text-xs text-gray-500 font-medium">Questions Asked</div>
+                <div className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">AI</div>
+                <div className="text-xs text-gray-500 font-medium">Powered Analysis</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">94%</div>
-                <div className="text-xs text-gray-500 font-medium">Success Rate</div>
+                <div className="text-2xl font-bold bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">100%</div>
+                <div className="text-xs text-gray-500 font-medium">Personalized</div>
               </div>
             </div>
           </div>

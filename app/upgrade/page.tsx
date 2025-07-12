@@ -30,6 +30,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import Header from "../dashboard/_components/Header";
 import { toast } from "sonner";
 
 function PricingPage() {
@@ -82,8 +83,9 @@ function PricingPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-100">
+      <Header />
       {/* Hero Section */}
-      <div className="relative overflow-hidden">
+      <div className="relative overflow-hidden pt-20">
         <div className="absolute inset-0 bg-gradient-to-r from-purple-600/10 to-blue-600/10" />
         {/* Floating background elements */}
         <div className="absolute inset-0 overflow-hidden -z-10">
@@ -269,7 +271,7 @@ function PricingPage() {
                 <CardContent className="p-8 text-center">
                   <div className="w-48 h-48 mx-auto bg-white rounded-2xl flex items-center justify-center mb-6 border-2 border-dashed border-purple-300 overflow-hidden shadow-sm">
                     <Image
-                      src="https://i.ibb.co/fGKfdWQn/Whats-App-Image-2025-07-03-at-16-01-57-ae2d2183.jpg"
+                      src="/paymentQR.jpg"
                       alt="QR Code Placeholder"
                       width={192}
                       height={192}

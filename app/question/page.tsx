@@ -1,8 +1,11 @@
 import React from "react";
+import Header from "../dashboard/_components/Header";
 
 function page() {
   return (
-    <div className="my-20">
+    <div>
+      <Header />
+      <div className="pt-32 pb-20">
       <section className="bg-white">
         <div className="mx-auto max-w-screen-xl px-4 py-12 sm:px-6 md:py-16 lg:px-8">
           <div className="mx-auto max-w-3xl text-center">
@@ -52,6 +55,7 @@ function page() {
           </div>
         </div>
       </section>
+      </div>
     </div>
   );
 }

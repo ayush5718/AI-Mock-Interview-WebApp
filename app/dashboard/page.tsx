@@ -5,43 +5,9 @@ import { motion } from "framer-motion";
 import AddNewInterview from "./_components/AddNewInterview";
 import UserName from "./_components/UserName";
 import InterviewList from "./_components/InterviewList";
-import { Sparkles, Target, TrendingUp, Zap, Star } from "lucide-react";
+import { Sparkles, Plus, History, TrendingUp, Target } from "lucide-react";
 
 function Dashboard() {
-  const quickStats = [
-    {
-      icon: Target,
-      label: "Practice Sessions",
-      value: "12",
-      color: "from-blue-500 to-cyan-500",
-      bgColor: "bg-blue-50",
-      textColor: "text-blue-700"
-    },
-    {
-      icon: TrendingUp,
-      label: "Avg Score",
-      value: "8.5/10",
-      color: "from-green-500 to-emerald-500",
-      bgColor: "bg-green-50",
-      textColor: "text-green-700"
-    },
-    {
-      icon: Zap,
-      label: "Streak",
-      value: "5 days",
-      color: "from-purple-500 to-pink-500",
-      bgColor: "bg-purple-50",
-      textColor: "text-purple-700"
-    },
-    {
-      icon: Star,
-      label: "Level",
-      value: "Pro",
-      color: "from-orange-500 to-red-500",
-      bgColor: "bg-orange-50",
-      textColor: "text-orange-700"
-    }
-  ];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
@@ -65,63 +31,80 @@ function Dashboard() {
           </p>
         </motion.div>
 
-        {/* Quick Stats */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-8 sm:mb-12"
-        >
-          {quickStats.map((stat, index) => (
-            <motion.div
-              key={stat.label}
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.4, delay: 0.1 * index }}
-              className={`${stat.bgColor} p-3 sm:p-4 lg:p-6 rounded-xl sm:rounded-2xl border border-gray-200 hover:shadow-lg transition-all duration-300 group cursor-pointer`}
-            >
-              <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
-                <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-gradient-to-r ${stat.color} flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0`}>
-                  <stat.icon className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+        {/* Main Dashboard Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
+
+          {/* Left Column - Create Interview */}
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="lg:col-span-1"
+          >
+            <div className="bg-white/80 backdrop-blur-md rounded-2xl p-6 sm:p-8 border border-gray-200/50 shadow-lg h-fit">
+              <div className="text-center mb-6">
+                <div className="w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                  <Plus className="w-8 h-8 text-white" />
                 </div>
-                <div className="flex-1 min-w-0">
-                  <div className={`text-lg sm:text-xl lg:text-2xl font-bold ${stat.textColor} leading-tight`}>{stat.value}</div>
-                  <div className="text-xs sm:text-sm text-gray-600 font-medium leading-tight">{stat.label}</div>
+                <h2 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-gray-900 to-blue-900 bg-clip-text text-transparent mb-2">
+                  Start New Interview
+                </h2>
+                <p className="text-sm text-gray-600">
+                  Create a personalized mock interview in seconds ⚡
+                </p>
+              </div>
+
+              <AddNewInterview />
+
+              {/* Quick Stats */}
+              <div className="mt-6 pt-6 border-t border-gray-200">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="text-center">
+                    <div className="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center mx-auto mb-2">
+                      <Target className="w-5 h-5 text-green-600" />
+                    </div>
+                    <p className="text-xs text-gray-500">AI-Powered</p>
+                    <p className="text-sm font-semibold text-gray-900">Questions</p>
+                  </div>
+                  <div className="text-center">
+                    <div className="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center mx-auto mb-2">
+                      <TrendingUp className="w-5 h-5 text-purple-600" />
+                    </div>
+                    <p className="text-xs text-gray-500">Instant</p>
+                    <p className="text-sm font-semibold text-gray-900">Feedback</p>
+                  </div>
                 </div>
               </div>
-            </motion.div>
-          ))}
-        </motion.div>
+            </div>
+          </motion.div>
 
-        {/* Create New Interview Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          className="mb-8 sm:mb-12"
-        >
-          <div className="text-center mb-6 sm:mb-8">
-            <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold bg-gradient-to-r from-gray-900 to-blue-900 bg-clip-text text-transparent mb-2 px-4">
-              Start Your Next Interview
-            </h2>
-            <p className="text-sm sm:text-base text-gray-600 px-4">
-              Create a personalized mock interview in seconds ⚡
-            </p>
-          </div>
+          {/* Right Column - Interview History */}
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            className="lg:col-span-2"
+          >
+            <div className="bg-white/80 backdrop-blur-md rounded-2xl p-6 sm:p-8 border border-gray-200/50 shadow-lg">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-12 h-12 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl flex items-center justify-center">
+                  <History className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h2 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-gray-900 to-indigo-900 bg-clip-text text-transparent">
+                    Interview History
+                  </h2>
+                  <p className="text-sm text-gray-600">
+                    Track your progress and review past interviews
+                  </p>
+                </div>
+              </div>
 
-          <div className="max-w-md mx-auto px-4">
-            <AddNewInterview />
-          </div>
-        </motion.div>
+              <InterviewList />
+            </div>
+          </motion.div>
 
-        {/* Interview History */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.6 }}
-        >
-          <InterviewList />
-        </motion.div>
+        </div>
       </div>
     </div>
   );

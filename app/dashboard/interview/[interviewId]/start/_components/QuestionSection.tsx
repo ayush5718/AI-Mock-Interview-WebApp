@@ -1,11 +1,17 @@
-import { Lightbulb, Volume2, VolumeX, Brain, MessageCircle, Sparkles } from "lucide-react";
+import { Lightbulb, Volume2, VolumeX, Brain, MessageCircle, Sparkles, Play, Pause } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import { useSpeechSynthesis } from "@/hooks/useSpeechSynthesis";
 // Define the props type for the QuestionSection component
 // Define the props type for the QuestionSection component
 interface QuestionSectionProps {
-  mockInterviewQuestion: { question: string; answer?: string }[]; // Updated type to include optional answer field
+  mockInterviewQuestion: {
+    question: string;
+    answer?: string;
+    round?: string;
+    questionNumber?: number;
+  }[];
   activeQuestionIndex: number;
 }
 // Define the type for a single question
@@ -18,7 +24,18 @@ function QuestionSection({
   mockInterviewQuestion,
   activeQuestionIndex,
 }: QuestionSectionProps) {
-  const [isSpeaking, setIsSpeaking] = useState(false);
+
+  const { speak, stop, speaking, supported } = useSpeechSynthesis({
+    onEnd: () => {
+      console.log("Speech ended");
+    },
+    onStart: () => {
+      console.log("Speech started");
+    },
+    onError: (error) => {
+      console.error("Speech error:", error);
+    }
+  });
 
   // Add logging to see what questions are received
   console.log("=== QUESTION SECTION PROPS ===");
@@ -32,29 +49,51 @@ function QuestionSection({
     console.log("Answer:", mockInterviewQuestion[activeQuestionIndex]?.answer);
   }
 
-  const textToSpeech = (text: string) => {
-    if ("speechSynthesis" in window) {
-      if (isSpeaking) {
-        window.speechSynthesis.cancel();
-        setIsSpeaking(false);
+  // Determine current round and progress
+  const currentQuestion = mockInterviewQuestion?.[activeQuestionIndex];
+  const isResumeBasedInterview = mockInterviewQuestion?.some(q => q.round);
+  const currentRound = currentQuestion?.round || "General";
+  const technicalQuestions = mockInterviewQuestion?.filter(q => q.round === "Technical") || [];
+  const hrQuestions = mockInterviewQuestion?.filter(q => q.round === "HR") || [];
+
+  let roundProgress = "";
+  if (isResumeBasedInterview) {
+    if (currentRound === "Technical") {
+      const techIndex = technicalQuestions.findIndex(q => q.question === currentQuestion?.question);
+      roundProgress = `Technical Round: ${techIndex + 1} of ${technicalQuestions.length}`;
+    } else if (currentRound === "HR") {
+      const hrIndex = hrQuestions.findIndex(q => q.question === currentQuestion?.question);
+      roundProgress = `HR Round: ${hrIndex + 1} of ${hrQuestions.length}`;
+    }
+  } else {
+    roundProgress = `Question ${activeQuestionIndex + 1} of ${mockInterviewQuestion?.length || 0}`;
+  }
+
+  // Stop speech when question changes (no auto-play)
+  useEffect(() => {
+    // Just stop any ongoing speech when question changes
+    stop();
+  }, [activeQuestionIndex, stop]);
+
+  const handleSpeakQuestion = () => {
+    if (mockInterviewQuestion && mockInterviewQuestion[activeQuestionIndex]?.question) {
+      const currentQuestion = mockInterviewQuestion[activeQuestionIndex].question;
+
+      if (speaking) {
+        stop();
       } else {
-        const speech = new SpeechSynthesisUtterance(text);
-        speech.onend = () => {
-          setIsSpeaking(false);
-        };
-        window.speechSynthesis.speak(speech);
-        setIsSpeaking(true);
+        speak(currentQuestion);
       }
-    } else {
-      alert("Sorry, your browser doesn't support text to speech");
     }
   };
 
+  // Cleanup effect to stop speech on component unmount
   useEffect(() => {
     return () => {
-      window.speechSynthesis.cancel(); // Cleanup speech synthesis on component unmount
+      stop(); // Use our hook's stop function for proper cleanup
+      window.speechSynthesis.cancel(); // Additional cleanup
     };
-  }, []);
+  }, [stop]);
 
   return (
     mockInterviewQuestion && (
@@ -69,29 +108,54 @@ function QuestionSection({
           {/* Question Header */}
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl flex items-center justify-center">
+              <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
+                currentRound === "Technical"
+                  ? "bg-gradient-to-r from-blue-600 to-cyan-600"
+                  : currentRound === "HR"
+                  ? "bg-gradient-to-r from-purple-600 to-pink-600"
+                  : "bg-gradient-to-r from-blue-600 to-purple-600"
+              }`}>
                 <Brain className="w-5 h-5 text-white" />
               </div>
               <div>
-                <h3 className="font-semibold text-gray-900">Interview Question</h3>
-                <p className="text-sm text-gray-600">Question {activeQuestionIndex + 1} of {mockInterviewQuestion.length}</p>
+                <h3 className="font-semibold text-gray-900">
+                  {isResumeBasedInterview ? `${currentRound} Round` : "Interview Question"}
+                </h3>
+                <p className="text-sm text-gray-600">{roundProgress}</p>
               </div>
             </div>
 
+            {/* Round Badge */}
+            {isResumeBasedInterview && (
+              <div className={`px-3 py-1 rounded-full text-xs font-medium ${
+                currentRound === "Technical"
+                  ? "bg-blue-100 text-blue-700"
+                  : "bg-purple-100 text-purple-700"
+              }`}>
+                {currentRound} Round
+              </div>
+            )}
+
             {/* Audio Button */}
             <Button
-              onClick={() => textToSpeech(mockInterviewQuestion[activeQuestionIndex]?.question)}
+              onClick={handleSpeakQuestion}
               variant="outline"
               size="sm"
               className={`flex items-center gap-2 transition-all duration-200 ${
-                isSpeaking
+                speaking
                   ? 'bg-blue-50 border-blue-300 text-blue-700'
                   : 'hover:bg-gray-50'
               }`}
+              disabled={!supported}
+              title={speaking ? 'Stop reading' : 'Listen to question'}
             >
-              <Volume2 className="w-4 h-4" />
+              {speaking ? (
+                <Pause className="w-4 h-4" />
+              ) : (
+                <Volume2 className="w-4 h-4" />
+              )}
               <span className="hidden sm:inline">
-                {isSpeaking ? 'Speaking...' : 'Listen'}
+                {speaking ? 'Stop' : 'Listen'}
               </span>
             </Button>
           </div>

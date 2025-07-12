@@ -159,8 +159,15 @@ function Interview({ params }: any) {
                 <div className="flex items-start gap-3 p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-200/50">
                   <Code className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
                   <div>
-                    <h4 className="font-medium text-gray-900 mb-1">Tech Stack & Skills</h4>
-                    <p className="text-gray-700">{interviewData?.jobDesc}</p>
+                    <h4 className="font-medium text-gray-900 mb-1">
+                      {interviewData?.jobDesc?.includes("Resume-based interview") ? "Interview Type" : "Tech Stack & Skills"}
+                    </h4>
+                    <p className="text-gray-700">
+                      {interviewData?.jobDesc?.includes("Resume-based interview")
+                        ? "Resume-based personalized interview with 10 questions"
+                        : interviewData?.jobDesc
+                      }
+                    </p>
                   </div>
                 </div>
 
@@ -181,8 +188,10 @@ function Interview({ params }: any) {
                 <div>
                   <h3 className="font-semibold text-amber-800 mb-2">📋 Important Information</h3>
                   <p className="text-amber-700 text-sm leading-relaxed">
-                    {process.env.NEXT_PUBLIC_INFORMATION ||
-                     "Enable your camera and microphone for the best interview experience. This AI-powered mock interview will provide personalized feedback based on your responses. Take your time and speak clearly."}
+                    {interviewData?.jobDesc?.includes("Resume-based interview")
+                      ? (process.env.NEXT_PUBLIC_RESUME_INFORMATION || "Enable your camera and microphone for the best interview experience. This AI-powered mock interview has 10 personalized questions based on your resume. Take your time and speak clearly.")
+                      : (process.env.NEXT_PUBLIC_INFORMATION || "Enable your camera and microphone for the best interview experience. This AI-powered mock interview will provide personalized feedback based on your responses. Take your time and speak clearly.")
+                    }
                   </p>
                 </div>
               </div>

@@ -57,10 +57,10 @@ function Logo({ className = "", size = "md" }: LogoProps) {
       {/* Logo Text */}
       <div className="flex flex-col">
         <span className={`font-bold ${textSizeClasses[size]} bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent`}>
-          InterviewAI
+          AI Interview Coach
         </span>
         <span className="text-xs text-gray-500 font-medium -mt-1">
-          Master Your Interview
+          Resume-Powered Practice
         </span>
       </div>
     </div>
