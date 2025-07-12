@@ -6,8 +6,19 @@ const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_API_KEY!);
 
 export async function POST(request: NextRequest) {
   console.log('=== GEMINI PDF ANALYSIS API CALLED ===');
+  console.log('Environment:', process.env.NODE_ENV);
+  console.log('API Key exists:', !!process.env.NEXT_PUBLIC_GEMINI_API_KEY);
 
   try {
+    // Check API key first
+    if (!process.env.NEXT_PUBLIC_GEMINI_API_KEY) {
+      console.log('❌ Gemini API key not found');
+      return NextResponse.json({
+        success: false,
+        error: 'AI service not configured properly'
+      }, { status: 500 });
+    }
+
     // Get the form data
     const formData = await request.formData();
     const file = formData.get('resume') as File;
@@ -17,21 +28,25 @@ export async function POST(request: NextRequest) {
     console.log('Job position:', jobPosition);
 
     if (!file) {
-      return NextResponse.json({ error: 'No file provided' }, { status: 400 });
+      console.log('❌ No file provided');
+      return NextResponse.json({ success: false, error: 'No file provided' }, { status: 400 });
     }
 
     if (!jobPosition) {
-      return NextResponse.json({ error: 'Job position is required' }, { status: 400 });
+      console.log('❌ No job position provided');
+      return NextResponse.json({ success: false, error: 'Job position is required' }, { status: 400 });
     }
 
     // Validate file type
     if (file.type !== 'application/pdf') {
-      return NextResponse.json({ error: 'File must be a PDF' }, { status: 400 });
+      console.log('❌ Invalid file type:', file.type);
+      return NextResponse.json({ success: false, error: 'File must be a PDF' }, { status: 400 });
     }
 
     // Validate file size (10MB limit)
     if (file.size > 10 * 1024 * 1024) {
-      return NextResponse.json({ error: 'File size must be less than 10MB' }, { status: 400 });
+      console.log('❌ File too large:', file.size);
+      return NextResponse.json({ success: false, error: 'File size must be less than 10MB' }, { status: 400 });
     }
 
     // Convert file to buffer and then to base64
@@ -62,71 +77,83 @@ Return ONLY valid JSON array:
 ]`;
 
     // Send the PDF and prompt to Gemini
-    console.log('Sending PDF to Gemini AI...');
+    console.log('🚀 Sending PDF to Gemini AI...');
+    console.log('PDF size:', `${(file.size / 1024 / 1024).toFixed(2)}MB`);
 
-    const result = await model.generateContent([
-      {
-        inlineData: {
-          data: base64Data,
-          mimeType: "application/pdf"
-        }
-      },
-      prompt
-    ]);
-
-    const response = result.response;
-    const text = response.text();
-
-    console.log('Gemini response received');
-    console.log('Response length:', text.length);
-
-
-
-    // Parse the JSON response from Gemini
-    const cleanResponse = text.replace(/```json/g, '').replace(/```/g, '').trim();
-    
-    let questions;
     try {
-      // Try to find JSON in the response
-      const jsonStart = cleanResponse.indexOf('[');
-      const jsonEnd = cleanResponse.lastIndexOf(']');
-      
-      if (jsonStart !== -1 && jsonEnd !== -1) {
-        const jsonString = cleanResponse.substring(jsonStart, jsonEnd + 1);
-        questions = JSON.parse(jsonString);
-      } else {
-        throw new Error('No valid JSON found in response');
+      const result = await model.generateContent([
+        {
+          inlineData: {
+            data: base64Data,
+            mimeType: "application/pdf"
+          }
+        },
+        prompt
+      ]);
+
+      const response = result.response;
+      const text = response.text();
+
+      console.log('✅ Gemini response received');
+      console.log('Response length:', text.length);
+      console.log('Response preview:', text.substring(0, 100));
+
+      if (!text || text.length < 10) {
+        throw new Error('Empty or invalid response from Gemini');
       }
-    } catch (parseError) {
-      console.error('Error parsing Gemini response:', parseError);
-      console.log('Raw response:', text);
-      throw new Error('Failed to parse interview questions from AI response');
-    }
 
-    if (!questions || questions.length < 10) {
-      throw new Error(`Expected at least 10 questions, got ${questions?.length || 0}`);
-    }
 
-    const technicalCount = questions.filter((q: any) => q.round === 'Technical').length;
-    const hrCount = questions.filter((q: any) => q.round === 'HR').length;
 
-    console.log(`🎉 Successfully generated ${questions.length} resume-based questions:`);
-    console.log(`   📋 Technical Questions: ${technicalCount}`);
-    console.log(`   👥 HR Questions: ${hrCount}`);
-    console.log(`   📄 Based on resume: ${file.name}`);
+      // Parse the JSON response from Gemini
+      const cleanResponse = text.replace(/```json/g, '').replace(/```/g, '').trim();
 
-    return NextResponse.json({
-      success: true,
-      questions: questions,
-      questionsJson: JSON.stringify(questions),
-      metadata: {
-        questionCount: questions.length,
-        technicalQuestions: technicalCount,
-        hrQuestions: hrCount,
-        resumeAnalyzed: true,
-        fileName: file.name
+      let questions;
+      try {
+        // Try to find JSON in the response
+        const jsonStart = cleanResponse.indexOf('[');
+        const jsonEnd = cleanResponse.lastIndexOf(']');
+
+        if (jsonStart !== -1 && jsonEnd !== -1) {
+          const jsonString = cleanResponse.substring(jsonStart, jsonEnd + 1);
+          questions = JSON.parse(jsonString);
+        } else {
+          throw new Error('No valid JSON found in response');
+        }
+      } catch (parseError) {
+        console.error('❌ Error parsing Gemini response:', parseError);
+        console.log('Raw response:', text.substring(0, 500));
+        throw new Error('Failed to parse interview questions from AI response');
       }
-    });
+
+      if (!questions || questions.length < 10) {
+        throw new Error(`Expected at least 10 questions, got ${questions?.length || 0}`);
+      }
+
+      const technicalCount = questions.filter((q: any) => q.round === 'Technical').length;
+      const hrCount = questions.filter((q: any) => q.round === 'HR').length;
+
+      console.log(`🎉 Successfully generated ${questions.length} resume-based questions:`);
+      console.log(`   📋 Technical Questions: ${technicalCount}`);
+      console.log(`   👥 HR Questions: ${hrCount}`);
+      console.log(`   📄 Based on resume: ${file.name}`);
+
+      return NextResponse.json({
+        success: true,
+        questions: questions,
+        questionsJson: JSON.stringify(questions),
+        metadata: {
+          questionCount: questions.length,
+          technicalQuestions: technicalCount,
+          hrQuestions: hrCount,
+          resumeAnalyzed: true,
+          fileName: file.name
+        }
+      });
+
+    } catch (geminiError) {
+      console.error('❌ Gemini API call failed:', geminiError);
+      throw geminiError;
+    }
 
   } catch (error) {
     console.error('Error in Gemini PDF analysis:', error);

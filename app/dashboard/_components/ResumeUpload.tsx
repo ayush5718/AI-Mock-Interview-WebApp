@@ -178,14 +178,27 @@ function ResumeUpload({ onClose }: ResumeUploadProps) {
 
       console.log('Gemini response status:', response.status);
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error('Gemini API error:', errorData);
-        throw new Error(errorData.error || `Gemini API error: ${response.status}`);
-      }
+      let result;
+      try {
+        const responseText = await response.text();
+        console.log('Raw response:', responseText.substring(0, 200));
 
-      const result = await response.json();
-      console.log('✅ Gemini analysis successful:', result);
+        if (!response.ok) {
+          // Try to parse as JSON first, fallback to text
+          try {
+            const errorData = JSON.parse(responseText);
+            throw new Error(errorData.error || `API error: ${response.status}`);
+          } catch {
+            throw new Error(`API error: ${response.status} - ${responseText.substring(0, 100)}`);
+          }
+        }
+
+        result = JSON.parse(responseText);
+        console.log('✅ Gemini analysis successful:', result);
+      } catch (parseError) {
+        console.error('Failed to parse response:', parseError);
+        throw new Error('Invalid response from server. Please try again.');
+      }
 
       if (!result.success) {
         throw new Error(result.error || 'Gemini analysis failed');
