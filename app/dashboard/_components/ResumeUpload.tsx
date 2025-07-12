@@ -185,12 +185,23 @@ function ResumeUpload({ onClose }: ResumeUploadProps) {
       }
 
       const result = await response.json();
-      console.log('Gemini analysis successful:', result);
+      console.log('✅ Gemini analysis successful:', result);
 
       if (!result.success) {
         throw new Error(result.error || 'Gemini analysis failed');
       }
 
+      if (!result.questionsJson) {
+        throw new Error('No questions received from AI analysis');
+      }
+
+      // Validate that we got resume-based questions
+      const questions = JSON.parse(result.questionsJson);
+      if (!questions || questions.length < 10) {
+        throw new Error(`Expected at least 10 questions, got ${questions?.length || 0}`);
+      }
+
+      console.log(`✅ Generated ${questions.length} personalized questions based on resume`);
       return result.questionsJson;
 
     } catch (error) {
@@ -220,6 +231,107 @@ function ResumeUpload({ onClose }: ResumeUploadProps) {
         activities: []
       };
     }
+  };
+
+  // Local question generation as reliable fallback
+  const generateLocalQuestions = (position: string) => {
+    const technicalQuestions = [
+      {
+        question: `What programming languages are you most comfortable with for ${position} development?`,
+        answer: "Look for relevant languages like JavaScript, Python, Java, etc. based on the role",
+        round: "Technical",
+        questionNumber: 1
+      },
+      {
+        question: `How would you approach building a new ${position.toLowerCase()} application from scratch?`,
+        answer: "Look for understanding of planning, architecture, and development process",
+        round: "Technical",
+        questionNumber: 2
+      },
+      {
+        question: "What is the difference between frontend and backend development?",
+        answer: "Should explain client-side vs server-side responsibilities",
+        round: "Technical",
+        questionNumber: 3
+      },
+      {
+        question: "How do you handle errors and debugging in your code?",
+        answer: "Look for systematic debugging approach and error handling strategies",
+        round: "Technical",
+        questionNumber: 4
+      },
+      {
+        question: "What is version control and why is it important?",
+        answer: "Should mention Git, collaboration, tracking changes, etc.",
+        round: "Technical",
+        questionNumber: 5
+      },
+      {
+        question: "How would you optimize the performance of a web application?",
+        answer: "Look for understanding of caching, optimization techniques, etc.",
+        round: "Technical",
+        questionNumber: 6
+      },
+      {
+        question: "What is the difference between SQL and NoSQL databases?",
+        answer: "Should explain relational vs non-relational database concepts",
+        round: "Technical",
+        questionNumber: 7
+      },
+      {
+        question: "How do you ensure your code is secure?",
+        answer: "Look for security best practices, input validation, authentication",
+        round: "Technical",
+        questionNumber: 8
+      }
+    ];
+
+    const hrQuestions = [
+      {
+        question: "Tell me about yourself in 2-3 sentences.",
+        answer: "Look for clear communication and relevant background",
+        round: "HR",
+        questionNumber: 1
+      },
+      {
+        question: `Why are you interested in this ${position} role?`,
+        answer: "Should show genuine interest and understanding of the role",
+        round: "HR",
+        questionNumber: 2
+      },
+      {
+        question: "What are your greatest strengths and weaknesses?",
+        answer: "Look for self-awareness and honesty",
+        round: "HR",
+        questionNumber: 3
+      },
+      {
+        question: "Where do you see yourself in 5 years?",
+        answer: "Should show career planning and ambition",
+        round: "HR",
+        questionNumber: 4
+      },
+      {
+        question: "How do you handle working under pressure or tight deadlines?",
+        answer: "Look for stress management and time management skills",
+        round: "HR",
+        questionNumber: 5
+      },
+      {
+        question: "Tell me about a challenging project you worked on.",
+        answer: "Should demonstrate problem-solving and perseverance",
+        round: "HR",
+        questionNumber: 6
+      },
+      {
+        question: `Why should we hire you for this ${position} position?`,
+        answer: "Look for confidence and understanding of value they bring",
+        round: "HR",
+        questionNumber: 7
+      }
+    ];
+
+    return [...technicalQuestions, ...hrQuestions];
   };
 
   const generateResumeBasedQuestions = async (resumeData: any, position: string) => {
@@ -292,57 +404,37 @@ JSON: [{"question":"...","answer":"...","round":"Technical","questionNumber":1}]
         questionsJson = await generateResumeBasedQuestions(resumeData, jobPosition);
 
       } else if (file) {
-        // Use PDF file - send directly to Gemini
+        // Use PDF file - send directly to Gemini for resume analysis
         try {
-          toast.info("Sending PDF to AI for analysis and question generation...", { duration: 5000 });
+          toast.info("🤖 Analyzing your resume with AI to create personalized questions...", { duration: 6000 });
 
           // Generate questions directly from PDF using Gemini
           questionsJson = await generateQuestionsFromPDF(file, jobPosition);
 
-          toast.success("PDF analyzed successfully! Generated personalized questions based on your resume.");
-          console.log("Questions generated from PDF");
+          // Set resume data to indicate it was analyzed
+          resumeData = {
+            personalInfo: { source: 'pdf_analysis' },
+            skills: ['Resume analyzed by AI'],
+            experience: ['Based on PDF content'],
+            education: ['From resume analysis'],
+            projects: ['AI extracted from resume'],
+            activities: ['Analyzed from PDF']
+          };
+
+          toast.success("🎉 Resume analyzed successfully! Generated personalized questions based on your actual resume content.");
+          console.log("✅ Questions generated from PDF analysis");
 
         } catch (pdfError) {
-          console.error("PDF analysis failed:", pdfError);
+          console.error("❌ PDF analysis failed:", pdfError);
 
           // Show user-friendly error message
           const errorMessage = pdfError instanceof Error ? pdfError.message : 'Unknown error';
 
-          if (errorMessage.includes('overloaded') || errorMessage.includes('503')) {
-            toast.error("AI service is temporarily busy");
-            toast.info("💡 Tip: Try using the 'Enter Text Instead' option for faster results!");
+          toast.error("Resume analysis failed");
+          toast.info("💡 Try using 'Enter Text Instead' option or try again later");
 
-            // Auto-suggest text input
-            setTimeout(() => {
-              toast.info("Click 'Enter Text Instead' button above to continue", { duration: 8000 });
-            }, 2000);
-
-            setIsProcessing(false);
-            return; // Don't proceed with fallback, let user choose text input
-
-          } else if (errorMessage.includes('string did not match the expected pattern')) {
-            toast.error("PDF format not supported by AI analysis");
-            toast.info("Don't worry! Creating interview questions based on your job position instead...");
-          } else if (errorMessage.includes('file format')) {
-            toast.error("PDF file format issue detected");
-            toast.info("Generating interview questions for your role instead...");
-          } else {
-            toast.error("PDF analysis temporarily unavailable");
-            toast.info("Creating interview based on job position instead...");
-          }
-
-          // Fallback to position-based questions
-          resumeData = {
-            personalInfo: {},
-            skills: [],
-            experience: [],
-            education: [],
-            projects: [],
-            activities: []
-          };
-
-          // Generate questions using fallback method
-          questionsJson = await generateResumeBasedQuestions(resumeData, jobPosition);
+          setIsProcessing(false);
+          return; // Stop processing, let user try again
         }
       } else {
         // No input provided - use position-based questions
@@ -355,9 +447,11 @@ JSON: [{"question":"...","answer":"...","round":"Technical","questionNumber":1}]
           activities: []
         };
 
-        // Generate questions using fallback method
+        // Generate questions using local method (no API calls)
         toast.info("Generating interview questions based on job position...");
-        questionsJson = await generateResumeBasedQuestions(resumeData, jobPosition);
+        const localQuestions = generateLocalQuestions(jobPosition);
+        questionsJson = JSON.stringify(localQuestions);
+        toast.success("Interview questions generated successfully!");
       }
       
       const mockId = uuidv4();

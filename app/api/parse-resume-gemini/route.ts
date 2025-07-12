@@ -39,29 +39,104 @@ export async function POST(request: NextRequest) {
     const buffer = Buffer.from(arrayBuffer);
     const base64Data = buffer.toString('base64');
     
-    console.log('Sending PDF to Gemini AI...');
+    console.log('📄 PDF Details:', {
+      name: file.name,
+      size: `${(file.size / 1024 / 1024).toFixed(2)}MB`,
+      type: file.type
+    });
+    console.log('🚀 Sending PDF to Gemini AI for resume analysis...');
 
     // Get the generative model
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
     
-    const prompt = `Create 15 interview questions for ${jobPosition} from this resume:
-8 Technical (explain skills/projects from resume, no coding)
-7 HR (career goals, teamwork, challenges)
-Return JSON: [{"question":"...","answer":"...","round":"Technical","questionNumber":1}]`;
+    const prompt = `You are an expert interviewer. Carefully analyze this resume PDF and create exactly 15 personalized interview questions for a ${jobPosition} position.
 
-    // Send the PDF and prompt to Gemini
-    const result = await model.generateContent([
-      {
-        inlineData: {
-          data: base64Data,
-          mimeType: "application/pdf"
+IMPORTANT: Read the resume content thoroughly and create questions that specifically reference:
+- Exact project names mentioned in the resume
+- Specific technologies and programming languages used
+- Company names and job titles from work experience
+- Educational background and achievements
+- Skills and certifications listed
+
+TECHNICAL QUESTIONS (8 questions):
+Create questions like:
+- "I see you worked on [specific project name from resume]. Can you explain how you implemented [specific technology]?"
+- "Your resume mentions experience with [specific technology]. How did you use it in [specific project]?"
+- "Tell me about the [specific project] you built. What challenges did you face?"
+- "I notice you used [specific tech stack] in your projects. Why did you choose this combination?"
+
+HR QUESTIONS (7 questions):
+Create questions like:
+- "I see you worked at [specific company]. What was your biggest achievement there?"
+- "Your resume shows you studied [specific field]. What motivated you to pursue this?"
+- "Tell me about your experience with [specific activity/project mentioned]."
+- "How did you balance [specific activities mentioned] with your studies/work?"
+
+CRITICAL REQUIREMENTS:
+1. Questions MUST reference specific details from the resume
+2. Use actual project names, company names, technologies mentioned
+3. Make questions conversational and specific to their background
+4. DO NOT create generic questions
+5. Return exactly 8 Technical + 7 HR questions
+
+Return ONLY this JSON format:
+[
+  {"question": "Specific question referencing resume content", "answer": "Expected answer focusing on their experience", "round": "Technical", "questionNumber": 1},
+  {"question": "Specific question referencing resume content", "answer": "Expected answer focusing on their experience", "round": "Technical", "questionNumber": 2},
+  {"question": "Specific question referencing resume content", "answer": "Expected answer focusing on their experience", "round": "Technical", "questionNumber": 3},
+  {"question": "Specific question referencing resume content", "answer": "Expected answer focusing on their experience", "round": "Technical", "questionNumber": 4},
+  {"question": "Specific question referencing resume content", "answer": "Expected answer focusing on their experience", "round": "Technical", "questionNumber": 5},
+  {"question": "Specific question referencing resume content", "answer": "Expected answer focusing on their experience", "round": "Technical", "questionNumber": 6},
+  {"question": "Specific question referencing resume content", "answer": "Expected answer focusing on their experience", "round": "Technical", "questionNumber": 7},
+  {"question": "Specific question referencing resume content", "answer": "Expected answer focusing on their experience", "round": "Technical", "questionNumber": 8},
+  {"question": "Specific question referencing resume content", "answer": "Expected answer focusing on their experience", "round": "HR", "questionNumber": 1},
+  {"question": "Specific question referencing resume content", "answer": "Expected answer focusing on their experience", "round": "HR", "questionNumber": 2},
+  {"question": "Specific question referencing resume content", "answer": "Expected answer focusing on their experience", "round": "HR", "questionNumber": 3},
+  {"question": "Specific question referencing resume content", "answer": "Expected answer focusing on their experience", "round": "HR", "questionNumber": 4},
+  {"question": "Specific question referencing resume content", "answer": "Expected answer focusing on their experience", "round": "HR", "questionNumber": 5},
+  {"question": "Specific question referencing resume content", "answer": "Expected answer focusing on their experience", "round": "HR", "questionNumber": 6},
+  {"question": "Specific question referencing resume content", "answer": "Expected answer focusing on their experience", "round": "HR", "questionNumber": 7}
+]`;
+
+    // Send the PDF and prompt to Gemini with retry logic
+    let result;
+    let text;
+
+    const maxRetries = 3;
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+      try {
+        console.log(`Attempt ${attempt}/${maxRetries} - Sending to Gemini...`);
+
+        result = await model.generateContent([
+          {
+            inlineData: {
+              data: base64Data,
+              mimeType: "application/pdf"
+            }
+          },
+          prompt
+        ]);
+
+        const response = result.response;
+        text = response.text();
+
+        console.log('Gemini response received successfully');
+        break; // Success, exit retry loop
+
+      } catch (retryError: any) {
+        console.error(`Attempt ${attempt} failed:`, retryError);
+
+        if (attempt === maxRetries) {
+          // Last attempt failed, throw the error
+          throw retryError;
         }
-      },
-      prompt
-    ]);
 
-    const response = result.response;
-    const text = response.text();
+        // Wait before retrying (exponential backoff)
+        const delay = Math.pow(2, attempt - 1) * 1000; // 1s, 2s, 4s
+        console.log(`Waiting ${delay}ms before retry...`);
+        await new Promise(resolve => setTimeout(resolve, delay));
+      }
+    }
     
     console.log('Gemini response received');
     console.log('Response length:', text.length);
@@ -91,7 +166,13 @@ Return JSON: [{"question":"...","answer":"...","round":"Technical","questionNumb
       throw new Error(`Expected at least 10 questions, got ${questions?.length || 0}`);
     }
 
-    console.log(`Successfully generated ${questions.length} questions`);
+    const technicalCount = questions.filter((q: any) => q.round === 'Technical').length;
+    const hrCount = questions.filter((q: any) => q.round === 'HR').length;
+
+    console.log(`🎉 Successfully generated ${questions.length} resume-based questions:`);
+    console.log(`   📋 Technical Questions: ${technicalCount}`);
+    console.log(`   👥 HR Questions: ${hrCount}`);
+    console.log(`   📄 Based on resume: ${file.name}`);
 
     return NextResponse.json({
       success: true,
@@ -99,8 +180,10 @@ Return JSON: [{"question":"...","answer":"...","round":"Technical","questionNumb
       questionsJson: JSON.stringify(questions),
       metadata: {
         questionCount: questions.length,
-        technicalQuestions: questions.filter((q: any) => q.round === 'Technical').length,
-        hrQuestions: questions.filter((q: any) => q.round === 'HR').length
+        technicalQuestions: technicalCount,
+        hrQuestions: hrCount,
+        resumeAnalyzed: true,
+        fileName: file.name
       }
     });
 
