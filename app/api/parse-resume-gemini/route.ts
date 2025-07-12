@@ -99,15 +99,14 @@ Return ONLY this JSON format:
 ]`;
 
     // Send the PDF and prompt to Gemini with retry logic
-    let result;
-    let text;
+    let text: string = '';
 
     const maxRetries = 3;
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
       try {
         console.log(`Attempt ${attempt}/${maxRetries} - Sending to Gemini...`);
 
-        result = await model.generateContent([
+        const result = await model.generateContent([
           {
             inlineData: {
               data: base64Data,
@@ -121,6 +120,7 @@ Return ONLY this JSON format:
         text = response.text();
 
         console.log('Gemini response received successfully');
+        console.log('Response length:', text.length);
         break; // Success, exit retry loop
 
       } catch (retryError: any) {
@@ -137,9 +137,11 @@ Return ONLY this JSON format:
         await new Promise(resolve => setTimeout(resolve, delay));
       }
     }
-    
-    console.log('Gemini response received');
-    console.log('Response length:', text.length);
+
+    // Ensure we have a response
+    if (!text) {
+      throw new Error('No response received from Gemini AI after all retry attempts');
+    }
 
     // Parse the JSON response from Gemini
     const cleanResponse = text.replace(/```json/g, '').replace(/```/g, '').trim();
