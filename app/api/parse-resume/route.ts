@@ -5,7 +5,7 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_API_KEY!);
 
 // Function to send PDF directly to Gemini and get interview questions
-async function generateQuestionsFromPDF(buffer: Buffer, jobPosition: string) {
+async function generateQuestionsFromPDF(buffer: Buffer, jobPosition: string): Promise<string> {
   try {
     console.log('Sending PDF directly to Gemini AI...');
 
@@ -229,6 +229,9 @@ export async function POST(request: NextRequest) {
     }, { status: 500 });
   }
 }
+
+// Helper function to extract skills from text
+function extractSkills(text: string): string[] {
   const skillKeywords = [
     // Programming Languages
     'JavaScript', 'TypeScript', 'Python', 'Java', 'C++', 'C#', 'PHP', 'Ruby', 'Go', 'Rust', 'Swift', 'Kotlin',
@@ -249,17 +252,17 @@ export async function POST(request: NextRequest) {
     // APIs
     'REST API', 'GraphQL', 'Microservices'
   ];
-  
+
   const foundSkills = skillKeywords.filter(skill => {
     const regex = new RegExp(`\\b${skill.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i');
     return regex.test(text);
   });
-  
+
   return Array.from(new Set(foundSkills));
 }
 
-function extractExperience(text: string) {
-  const experiences = [];
+function extractExperience(text: string): any[] {
+  const experiences: any[] = [];
   const lines = text.split('\n');
   
   for (let i = 0; i < lines.length; i++) {
@@ -287,8 +290,8 @@ function extractExperience(text: string) {
   return experiences.slice(0, 5);
 }
 
-function extractEducation(text: string) {
-  const education = [];
+function extractEducation(text: string): string[] {
+  const education: string[] = [];
   const lines = text.split('\n');
   
   for (const line of lines) {
@@ -301,8 +304,8 @@ function extractEducation(text: string) {
   return education.slice(0, 3);
 }
 
-function extractProjects(text: string) {
-  const projects = [];
+function extractProjects(text: string): string[] {
+  const projects: string[] = [];
   const lines = text.split('\n');
   
   let inProjectSection = false;
@@ -333,8 +336,8 @@ function extractProjects(text: string) {
   return projects.slice(0, 5);
 }
 
-function extractActivities(text: string) {
-  const activities = [];
+function extractActivities(text: string): string[] {
+  const activities: string[] = [];
   const activityKeywords = [
     'volunteer', 'leadership', 'club', 'society', 'organization', 'community',
     'sports', 'music', 'art', 'hackathon', 'conference', 'workshop', 'certification', 'award'
