@@ -62,7 +62,7 @@ export async function POST(request: NextRequest) {
     console.log('🚀 Sending PDF to Gemini AI for resume analysis...');
 
     // Get the generative model
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
     
     const prompt = `Analyze this resume PDF and create exactly 15 interview questions for a ${jobPosition} position.
 

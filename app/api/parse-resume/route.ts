@@ -13,7 +13,7 @@ async function generateQuestionsFromPDF(buffer: Buffer, jobPosition: string): Pr
     const base64Data = buffer.toString('base64');
 
     // Get the generative model
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
     const prompt = `
     Analyze this resume PDF and generate exactly 15 comprehensive interview questions for a ${jobPosition} position.
