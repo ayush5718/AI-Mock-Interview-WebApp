@@ -8,13 +8,12 @@ const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
 const genAI = new GoogleGenerativeAI(apiKey);
 
 const model = genAI.getGenerativeModel({
-  model: "gemini-1.5-flash",
+  model: "gemini-2.5-flash",
 });
 
 const generationConfig = {
   temperature: 0.7, // Reduced for more consistent and balanced responses
   topP: 0.8,
-  topK: 40,
   maxOutputTokens: 8192,
   responseMimeType: "text/plain",
 };
